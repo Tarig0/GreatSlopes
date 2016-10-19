@@ -1,0 +1,74 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model":"cube_column",
+    "textures": {
+      "particle": "camolib:blocks/dt.transport.elevator.side",
+      "down": "camolib:blocks/dt.transport.elevator.bottom",
+      "up": "camolib:blocks/dt.transport.elevator.top",
+      "side": "camolib:blocks/dt.transport.elevator.side"
+    },
+    "transform": {
+      "thirdperson": {
+        "rotation": [ {"x":10},{"y":-45}, {"z":170} ],
+        "translation": [ 0,0.09375, -0.171875 ],
+        "scale": [ 0.375, 0.375, 0.375 ]
+      },
+      "gui": {
+        "rotation": [ {"y": 180} ]
+      }
+    }
+  },
+  "variants": {
+    "camo":{"true":{},"false":{}},
+    "dquad":{
+      "downnorth":{"y":90},
+      "downsouth":{"y":270},
+      "downwest":{},
+      "downeast":{"y":180},
+
+      "upnorth":{"x":180,"y":90},
+      "upsouth":{"x":180,"y":270},
+      "upwest":{"x":180},
+      "upeast":{"x":180,"y":180},
+
+      "northdown":{"transform": {"rotation":[{"x":90},{"y":90}]}},
+      "northeast":{"transform": {"rotation":[{"x":90},{"y":180}]}},
+      "northup":{"transform": {"rotation":[{"x":90},{"y":270}]}},
+      "northwest":{"transform": {"rotation":[{"x":90}]}},
+
+      "southdown":{"transform": {"rotation":[{"x":270},{"y":270}]}},
+      "southwest":{"transform": {"rotation":[{"x":270}]}},
+      "southup":{"transform": {"rotation":[{"x":270},{"y":90}]}},
+      "southeast":{"transform": {"rotation":[{"x":270},{"y":180}]}},
+
+      "westdown":{"transform": {"rotation":[{"x":180},{"z":270}]}},
+      "westnorth":{"transform": {"rotation":[{"x":270},{"z":270}]}},
+      "westup":{"transform": {"rotation":[{"z":270}]}},
+      "westsouth":{"transform": {"rotation":[{"x":90},{"z":270}]}},
+
+      "eastdown":{"transform": {"rotation":[{"z":90}]}},
+      "eastsouth":{"transform": {"rotation":[{"x":270},{"z":90}]}},
+      "eastup":{"transform": {"rotation":[{"x":180},{"z":90}]}},
+      "eastnorth":{"transform": {"rotation":[{"x":90},{"z":90}]}}
+    },
+    "slope": {
+      "100shave10base2":{"model":"camolib:slope100Shave10Base2.obj","custom":{"flip-v":true}},
+      "100shave10base4":{"model":"camolib:slope100Shave10Base4.obj","custom":{"flip-v":true}},
+      "100shave10base6":{"model":"camolib:slope100Shave10Base6.obj","custom":{"flip-v":true}},
+      "100shave10base8":{"model":"camolib:slope100Shave10Base8.obj","custom":{"flip-v":true}},
+      "100shave10base10":{"model":"camolib:slope100Base10.obj","custom":{"flip-v":true}},
+      "100shave12":{"model":"camolib:slope100Shave12.obj","custom":{"flip-v":true}},
+      "100shave12base2":{"model":"camolib:slope100Shave12Base2.obj","custom":{"flip-v":true}},
+      "100shave12base4":{"model":"camolib:slope100Shave12Base4.obj","custom":{"flip-v":true}},
+      "100shave12base6":{"model":"camolib:slope100Shave12Base6.obj","custom":{"flip-v":true}},
+      "100shave12base8":{"model":"camolib:slope100Shave12Base8.obj","custom":{"flip-v":true}},
+      "100shave12base10":{"model":"camolib:slope100Shave12Base10.obj","custom":{"flip-v":true}},
+      "100shave12base12":{"model":"camolib:slope100Base12.obj","custom":{"flip-v":true}},
+      "100shave14":{"model":"camolib:slope100Shave14.obj","custom":{"flip-v":true}},
+      "100shave14base2":{"model":"camolib:slope100Shave14Base2.obj","custom":{"flip-v":true}},
+      "100shave14base4":{"model":"camolib:slope100Shave14Base4.obj","custom":{"flip-v":true}},
+      "100shave14base6":{"model":"camolib:slope100Shave14Base6.obj","custom":{"flip-v":true}}
+    }
+  }
+}

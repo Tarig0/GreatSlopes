@@ -1,0 +1,85 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model":"cube_column",
+    "textures": {
+      "particle": "camolib:blocks/dt.transport.elevator.side",
+      "down": "camolib:blocks/dt.transport.elevator.bottom",
+      "up": "camolib:blocks/dt.transport.elevator.top",
+      "side": "camolib:blocks/dt.transport.elevator.side"
+    },
+    "transform": {
+      "thirdperson": {
+        "rotation": [ {"x":10},{"y":-45}, {"z":170} ],
+        "translation": [ 0,0.09375, -0.171875 ],
+        "scale": [ 0.375, 0.375, 0.375 ]
+      },
+      "gui": {
+        "rotation": [ {"y": 180} ]
+      }
+    }
+  },
+  "variants": {
+    "camo":{"true":{},"false":{}},
+    "dquad":{
+      "downnorth":{"y":90},
+      "downsouth":{"y":270},
+      "downwest":{},
+      "downeast":{"y":180},
+
+      "upnorth":{"x":180,"y":90},
+      "upsouth":{"x":180,"y":270},
+      "upwest":{"x":180},
+      "upeast":{"x":180,"y":180},
+
+      "northdown":{"transform": {"rotation":[{"x":90},{"y":90}]}},
+      "northeast":{"transform": {"rotation":[{"x":90},{"y":180}]}},
+      "northup":{"transform": {"rotation":[{"x":90},{"y":270}]}},
+      "northwest":{"transform": {"rotation":[{"x":90}]}},
+
+      "southdown":{"transform": {"rotation":[{"x":270},{"y":270}]}},
+      "southwest":{"transform": {"rotation":[{"x":270}]}},
+      "southup":{"transform": {"rotation":[{"x":270},{"y":90}]}},
+      "southeast":{"transform": {"rotation":[{"x":270},{"y":180}]}},
+
+      "westdown":{"transform": {"rotation":[{"x":180},{"z":270}]}},
+      "westnorth":{"transform": {"rotation":[{"x":270},{"z":270}]}},
+      "westup":{"transform": {"rotation":[{"z":270}]}},
+      "westsouth":{"transform": {"rotation":[{"x":90},{"z":270}]}},
+
+      "eastdown":{"transform": {"rotation":[{"z":90}]}},
+      "eastsouth":{"transform": {"rotation":[{"x":270},{"z":90}]}},
+      "eastup":{"transform": {"rotation":[{"x":180},{"z":90}]}},
+      "eastnorth":{"transform": {"rotation":[{"x":90},{"z":90}]}}
+    },
+    "slope": {
+      "100":{"model":"camolib:slope100.obj","custom":{"flip-v":true}},
+      "100shave2":{"model":"camolib:slope100Shave2.obj","custom":{"flip-v":true}},
+      "100shave2base2":{"model":"camolib:slope100Base2.obj","custom":{"flip-v":true}},
+      "100shave4":{"model":"camolib:slope100Shave4.obj","custom":{"flip-v":true}},
+      "100shave4base2":{"model":"camolib:slope100Shave4Base2.obj","custom":{"flip-v":true}},
+      "100shave4base4":{"model":"camolib:slope100Base4.obj","custom":{"flip-v":true}},
+      "100shave6":{"model":"camolib:slope100Shave6.obj","custom":{"flip-v":true}},
+      "100shave6base2":{"model":"camolib:slope100Shave6Base2.obj","custom":{"flip-v":true}},
+      "100shave6base4":{"model":"camolib:slope100Shave6Base4.obj","custom":{"flip-v":true}},
+      "100shave6base6":{"model":"camolib:slope100Base6.obj","custom":{"flip-v":true}},
+      "100shave8":{"model":"camolib:slope100Shave8.obj","custom":{"flip-v":true}},
+      "100shave8base2":{"model":"camolib:slope100Shave8Base2.obj","custom":{"flip-v":true}},
+      "100shave8base4":{"model":"camolib:slope100Shave8Base4.obj","custom":{"flip-v":true}},
+      "100shave8base6":{"model":"camolib:slope100Shave8Base6.obj","custom":{"flip-v":true}},
+      "100shave8base8":{"model":"camolib:slope100Base8.obj","custom":{"flip-v":true}},
+      "100shave10":{"model":"camolib:slope100Shave10.obj","custom":{"flip-v":true}},
+      "100shave10base10":{"model":"camolib:slope100Base10.obj","custom":{"flip-v":true}},
+      "100base12":{"model":"camolib:slope100Base12.obj","custom":{"flip-v":true}},
+      "100base14":{"model":"camolib:slope100Base14.obj","custom":{"flip-v":true}},
+      "50": {"model":"camolib:slope50.obj","custom":{"flip-v":true}},
+      "50base2": {"model":"camolib:slope50Base2.obj","custom":{"flip-v":true}},
+      "50base4": {"model":"camolib:slope50Base4.obj","custom":{"flip-v":true}},
+      "50base6": {"model":"camolib:slope50Base6.obj","custom":{"flip-v":true}},
+      "50base8": {"model":"camolib:slope50Base8.obj","custom":{"flip-v":true}},
+      "50base10": {"model":"camolib:slope50Base10.obj","custom":{"flip-v":true}},
+      "50base12": {"model":"camolib:slope50Base12.obj","custom":{"flip-v":true}},
+      "50base14": {"model":"camolib:slope50Base14.obj","custom":{"flip-v":true}}
+    }
+  }
+}
