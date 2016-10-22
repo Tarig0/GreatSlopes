@@ -18,9 +18,9 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.slimevoid.camolib.block.BlockCamoSlope;
 import net.slimevoid.camolib.core.lib.ConfigLib;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,8 +32,8 @@ public class ModelBlockCamo implements IBakedModel {
     public ModelBlockCamo(){}
 
 
-    private List CamoSide(IExtendedBlockState origState,@NotNull IBlockState camo,@NotNull IVertexProducer origFace) {
-        List ret = new ArrayList();
+    private ArrayList<BakedQuad> CamoSide(IExtendedBlockState origState,@NotNull IBlockState camo,@NotNull IVertexProducer origFace) {
+        ArrayList<BakedQuad> ret = new ArrayList<BakedQuad>();
         //Set Orientation and facings
         for (Object p : camo.getPropertyNames()) {
             if (p instanceof PropertyDirection) {
@@ -86,13 +86,12 @@ public class ModelBlockCamo implements IBakedModel {
         UVs[3] = GetColorMulti(UVs[3], i1);
         UVs[6] = GetColorMulti(UVs[6], i1);
         UVs[9] = GetColorMulti(UVs[9], i1);
-
         //Finally replace color, U and V info for each face in the camo model
-        return ReplaceTexture(origFace, UVs);
+        return ReplaceTexture(origFace, UVs, quad.getSprite());
     }
 
     //This does the actual camouflage
-    private BakedQuad ReplaceTexture(BakedQuad origFace, int[] CUVs) {
+    private BakedQuad ReplaceTexture(BakedQuad origFace, int[] CUVs,TextureAtlasSprite sprite) {
         int origInts[] = origFace.getVertexData();
         //this returns an array in the following format
 
@@ -117,7 +116,7 @@ public class ModelBlockCamo implements IBakedModel {
                 origInts[7], origInts[8], origInts[9], CUVs[3], CUVs[4], CUVs[5],origInts[13],
                 origInts[14], origInts[15], origInts[16], CUVs[6], CUVs[7], CUVs[8],origInts[20],
                 origInts[21], origInts[22], origInts[23], CUVs[9], CUVs[10], CUVs[11],origInts[27]};
-        return new BakedQuad(finalInts, origFace.getTintIndex(), origFace.getFace(),null,true, DefaultVertexFormats.BLOCK);
+        return new BakedQuad(finalInts, origFace.getTintIndex(), origFace.getFace(),sprite,true, DefaultVertexFormats.ITEM);
     }
 
     //modifies UVs to match
@@ -150,31 +149,36 @@ public class ModelBlockCamo implements IBakedModel {
     }
 
     @Override
-    public List getQuads(IBlockState state, EnumFacing facing, long rand) {
+    @Nonnull
+    public List<BakedQuad> getQuads(IBlockState state, EnumFacing facing, long rand) {
         //get model of block if we didn't camo this will allow multiple models to be handled
-        List origFaces = GetNonCamoModel((IExtendedBlockState)state).getQuads(state,facing,rand);
-        IBlockState camoState = ((IExtendedBlockState)state).getValue(BlockCamoSlope.BLOCKSTATES[facing.ordinal()]);
-
-        if (camoState != null){
-            List ret = new ArrayList();
-            for(Object face:origFaces){
-                    ret.addAll(CamoSide((IExtendedBlockState) state,camoState,(IVertexProducer)face));
+        List<BakedQuad> origFaces = GetNonCamoModel((IExtendedBlockState) state).getQuads(state, null, rand);
+        if (facing != null) {
+            IBlockState camoState = ((IExtendedBlockState) state).getValue(BlockCamoSlope.BLOCKSTATES[facing.ordinal()]);
+            if (camoState != null) {
+                List<BakedQuad> ret = new ArrayList<BakedQuad>();
+                for (BakedQuad face : origFaces) {
+                    if (face.getFace() == facing)
+                        ret.addAll(CamoSide((IExtendedBlockState) state, camoState, face));
+                }
+                return ret;
+            } else if (state.getBlock().canRenderInLayer(state, MinecraftForgeClient.getRenderLayer())) {
+                List<BakedQuad> ret = new ArrayList<BakedQuad>();
+                for (BakedQuad face : origFaces) {
+                    if (face.getFace() == facing)
+                        ret.add(face);
+                }
+                return ret;
             }
-            return ret;
-        } else if (state.getBlock().canRenderInLayer(state,MinecraftForgeClient.getRenderLayer())) {
-            return origFaces;
-        }else{
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
     }
 
 
     private IBakedModel GetNonCamoModel(IExtendedBlockState origState) {
         IBlockState tempState = origState.getBlock().getDefaultState();
-        Iterator<IProperty<?>> itr = origState.getPropertyNames().iterator();
-        while(itr.hasNext()){
-            IProperty prop = itr.next();
-            if(prop.getName() != "camo") {
+        for (IProperty prop : origState.getPropertyNames()) {
+            if (!prop.getName().equals("camo")) {
                 tempState = tempState.withProperty(prop, origState.getValue(prop));
             }
         }
@@ -200,16 +204,19 @@ public class ModelBlockCamo implements IBakedModel {
     }
 
     @Override
+    @Nonnull
     public TextureAtlasSprite getParticleTexture() {
         return FMLClientHandler.instance().getClient().getBlockRendererDispatcher().getBlockModelShapes().getModelForState(ConfigLib.CamoBlocks[0].getDefaultState()).getParticleTexture();
     }
 
     @Override
+    @Nonnull
     public net.minecraft.client.renderer.block.model.ItemCameraTransforms getItemCameraTransforms() {
         return net.minecraft.client.renderer.block.model.ItemCameraTransforms.DEFAULT;
     }
     @Override
+    @Nonnull
     public ItemOverrideList getOverrides(){
-        return null;
+        return ItemOverrideList.NONE;
     }
 }

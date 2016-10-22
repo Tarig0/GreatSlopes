@@ -5,10 +5,11 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 /**
  * Created by alcoo on 12/12/2015.
+ *
  */
 public class UnlistedPropertyBlockPos implements IUnlistedProperty<BlockPos> {
     private final String name;
-    protected UnlistedPropertyBlockPos(String name){
+    private UnlistedPropertyBlockPos(String name){
         this.name = name;
     }
 
@@ -21,7 +22,7 @@ public class UnlistedPropertyBlockPos implements IUnlistedProperty<BlockPos> {
         return this.name;
     }
 
-    public boolean isValid(BlockPos value){return value instanceof BlockPos;}
+    public boolean isValid(BlockPos value){return value != null;}
 
     public Class<BlockPos> getType()
     {

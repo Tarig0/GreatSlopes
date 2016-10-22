@@ -15,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.slimevoid.camolib.block.BlockCamoSlope;
 
+import javax.annotation.Nonnull;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -53,8 +54,13 @@ public class TileEntityCamoBase extends TileEntity {
         this.quad = compound.getInteger(QUADNAME);
     }
     @Override
+    @Nonnull
     public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound = super.writeToNBT(compound);
+        return internalWrite(compound);
+    }
+
+    private NBTTagCompound internalWrite(NBTTagCompound compound) {
         NBTTagCompound itemTags = new NBTTagCompound();
         for (int i = 0; i < 6; i++) {
             if (items[i] != null) {
@@ -70,6 +76,12 @@ public class TileEntityCamoBase extends TileEntity {
         compound.setInteger(ANCHORNAME,this.getAnchor().ordinal());
         compound.setInteger(QUADNAME,this.getQuad());
         return compound;
+    }
+    @Override
+    @Nonnull
+    public NBTTagCompound getUpdateTag() {
+        NBTTagCompound compound = super.getUpdateTag();
+        return internalWrite(compound);
     }
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
@@ -158,7 +170,8 @@ public class TileEntityCamoBase extends TileEntity {
     private void addPendingCommand(int commandID, Object arg) {
         this.pendingUpdates.add(Pair.of(commandID,arg));
         this.markDirty();
-        this.getWorld().markBlockRangeForRenderUpdate(this.getPos(),this.getPos());
+        IBlockState state = this.getWorld().getBlockState(this.getPos());
+        this.getWorld().notifyBlockUpdate(this.getPos(),state,state,4);
     }
     //Network Reading
     private void UpdateFacings(NBTTagCompound nbtCompound) {
@@ -196,12 +209,12 @@ public class TileEntityCamoBase extends TileEntity {
         this.addPendingCommand(FACINGUPDATECOMMAND,2);
     }
 
-    public boolean setFaceItemWithHeldItem(IBlockState state,EnumFacing side, ItemStack heldItem) {
+    public boolean setFaceItemWithHeldItem(EnumFacing side, ItemStack heldItem) {
 
         if (items[side.ordinal()] == null && heldItem != null && heldItem.getItem() instanceof ItemBlock) {
             Block b = ((ItemBlock) heldItem.getItem()).getBlock();
-            AxisAlignedBB c =state.getCollisionBoundingBox(this.getWorld(),this.getPos());
-            if (!(b instanceof BlockCamoSlope) &&
+            AxisAlignedBB c =b.getDefaultState().getCollisionBoundingBox(this.getWorld(),this.getPos());
+            if (!(b instanceof BlockCamoSlope) && c !=null &&
                     c.maxX  - c.minX == 1 &&
                     c.maxY  - c.minY == 1 &&
                     c.maxZ  - c.minZ == 1
@@ -255,14 +268,15 @@ public class TileEntityCamoBase extends TileEntity {
         if(is == null)
         return null;
         else
-        return ((ItemBlock)is.getItem()).getBlock().getStateFromMeta(is.getMetadata());
+            //noinspection deprecation
+            return ((ItemBlock)is.getItem()).getBlock().getStateFromMeta(is.getMetadata());
     }
 
-    public ItemStack getItemForSide(int i) {
+    private ItemStack getItemForSide(int i) {
         return this.items[i];
     }
 
-    public void setItemForSide(int i, ItemStack value) {
+    private void setItemForSide(int i, ItemStack value) {
         this.items[i] = value;
     }
     //Utility Functions
@@ -272,7 +286,8 @@ public class TileEntityCamoBase extends TileEntity {
         for (ItemStack i: this.items) {
             if(i!= null){
                 Block b = ((ItemBlock)i.getItem()).getBlock();
-                int lightVal = b.getDefaultState().getLightValue(); //can't use position since that causes a loop
+                //noinspection deprecation can't use position since that causes a loop
+                int lightVal = b.getDefaultState().getLightValue();
                 if (lightVal > ret)
                     ret = lightVal;
             }

@@ -4,10 +4,11 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 
 /**
  * Created by alcoo on 12/12/2015.
+ *
  */
 public class UnlistedPropertyIBlockState implements IUnlistedProperty<IBlockState> {
     private final String name;
-    protected UnlistedPropertyIBlockState(String name){
+    private UnlistedPropertyIBlockState(String name){
         this.name = name;
     }
 
@@ -22,7 +23,7 @@ public class UnlistedPropertyIBlockState implements IUnlistedProperty<IBlockStat
 
     public boolean isValid(IBlockState value)
     {
-        return value == null || value instanceof IBlockState;
+        return true;
     }
 
     public Class<IBlockState> getType()

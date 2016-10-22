@@ -1,6 +1,12 @@
 package net.slimevoid.camolib.core;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.DefaultStateMapper;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
@@ -14,30 +20,47 @@ import net.slimevoid.camolib.core.lib.ConfigLib;
 import net.slimevoid.camolib.tileentity.TileEntityCamoBase;
 import net.slimevoid.camolib.util.EnumSlope;
 
+import javax.annotation.Nonnull;
+
+
 /**
  * Created by Allen on 3/21/2015.
  *
  */
-@Mod( modid = "camolib", name = "CamoLib", canBeDeactivated = false, version="0.0.1")
+@Mod( modid = CamoLib.MODID, name = "CamoLib", version="0.0.1")
 public class CamoLib {
-
+    public static final String MODID = "camolib";
     @Mod.EventHandler
-    public void preinit(FMLPreInitializationEvent event)
+    public void preInit(FMLPreInitializationEvent event)
     {
         ConfigLib.CamoBlocks = new BlockCamoSlope[(int)Math.ceil(EnumSlope.values().length/16d)];
         for(int i=0;i<ConfigLib.CamoBlocks.length;i++){
-            ConfigLib.CamoBlocks[i]= new BlockCamoSlope(EnumSlope.getSectionName(i), Material.ANVIL, i );
+            ConfigLib.CamoBlocks[i]= new BlockCamoSlope(EnumSlope.getSectionName(i), Material.CLOTH, i );
         }
 
-        if (event.getSide() == Side.CLIENT) clientPreInit(event);
+        if (event.getSide() == Side.CLIENT) clientPreInit();
     }
 
     @SideOnly(Side.CLIENT)
-    public void clientPreInit(FMLPreInitializationEvent event){
+    private void clientPreInit(){
         //register the modelBaker to insert the smart renderer
         MinecraftForge.EVENT_BUS.register(new ModelBaker());
         OBJLoader.INSTANCE.addDomain("camolib");
-        //ModelBaker.setItemsforCamo();
+        for(Block b : ConfigLib.CamoBlocks){
+            ModelLoader.setCustomStateMapper(b, new StateMapperBase()
+            {
+                @Nonnull
+                protected ModelResourceLocation getModelResourceLocation(@Nonnull IBlockState state)
+                {
+                    if (state.getValue(BlockCamoSlope.CAMO)) {
+                        return new ModelResourceLocation(ConfigLib.CamoModel, "normal");
+                    }else {
+                        return new ModelResourceLocation(ConfigLib.SlopeModel, new DefaultStateMapper().getPropertyString(state.getProperties()));
+                    }
+                }
+            });
+        }
+        ModelBaker.setItemsforCamo();
     }
 
     @Mod.EventHandler
@@ -45,8 +68,6 @@ public class CamoLib {
     {
         GameRegistry.registerTileEntity(TileEntityCamoBase.class, "slimevoidcamo");
     }
-
-
 
     @Mod.EventHandler
     @SideOnly(Side.CLIENT)

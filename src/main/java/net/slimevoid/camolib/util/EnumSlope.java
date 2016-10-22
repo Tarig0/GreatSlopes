@@ -1,12 +1,13 @@
 package net.slimevoid.camolib.util;
 
-import net.minecraft.util.*;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This enum holds all the shapes that can be represented by none overlapping bounding boxes
@@ -159,13 +160,14 @@ public enum EnumSlope implements IStringSerializable {
     SLOPE12_5BASE12(SLOPE12_5,6),
     SLOPE12_5BASE14(SLOPE12_5,7),
     //0 grade AKA slab
-    SLOPE0BASE2("0base2",1,0,0,0),
+    SLOPE0BASE2(1,0,0,0),
     SLOPE0BASE4(SLOPE0BASE2,2),
     SLOPE0BASE6(SLOPE0BASE2,3),
     SLOPE0BASE8(SLOPE0BASE2,4),
     SLOPE0BASE10(SLOPE0BASE2,5),
     SLOPE0BASE12(SLOPE0BASE2,6),
-    SLOPE0BASE14(SLOPE0BASE2,7);
+    SLOPE0BASE14(SLOPE0BASE2,7),
+    SLOPE0BASE16(SLOPE0BASE2,8); //full block
 
     private final String name;
     private final int slopeBase;
@@ -174,27 +176,35 @@ public enum EnumSlope implements IStringSerializable {
     private final int iOffset;
 
     EnumSlope(int deltaBound) {
-        this(String.valueOf((deltaBound/8D * 100)).replace(".0","").replace(".","_"),  0,  deltaBound);
+        this(0,deltaBound,0,-1);
     }
     EnumSlope(EnumSlope parentSlope, int slopeBase) {
-        this(parentSlope.getName()+"base"+String.valueOf(slopeBase * 2),slopeBase,parentSlope.deltaBound,parentSlope.iOffset,Math.min(parentSlope.deltaBound - Math.max(-8+parentSlope.deltaBound+slopeBase,0),parentSlope.slopeBoundCount));
+        this(slopeBase,parentSlope.deltaBound,parentSlope.iOffset,Math.min(parentSlope.deltaBound - Math.max(-8+parentSlope.deltaBound+slopeBase,0),parentSlope.slopeBoundCount));
     }
-    EnumSlope(String name, int slopeBase, int deltaBound) {
-        this(name,slopeBase,deltaBound,0,deltaBound - Math.max(-8+deltaBound+slopeBase,0));
-    }
-
     EnumSlope(EnumSlope parentSlope, int iOffset, int slopeBoundCount) {
-        this(parentSlope.getName()+(iOffset==0?"shave"+String.valueOf(((parentSlope.deltaBound)-slopeBoundCount)*2):"shaving"+String.valueOf(slopeBoundCount*2)),parentSlope.slopeBase,parentSlope.deltaBound,iOffset,slopeBoundCount);
+        this(parentSlope.slopeBase,parentSlope.deltaBound,iOffset,slopeBoundCount);
     }
-    EnumSlope(String name, int slopeBase, int deltaBound, int iOffset,int slopeBoundCount) {
-        this.name = name;
+    EnumSlope(int slopeBase, int deltaBound, int iOffset,int slopeBoundCount) {
+        String tempName = String.valueOf((deltaBound/8D * 100)).replace(".0","").replace(".","_");
+
+        if(iOffset != 0){
+            tempName += "shaving" + String.valueOf(slopeBoundCount * 2);
+        }else if(slopeBoundCount > 0){
+            tempName += "shave" + String.valueOf((deltaBound-slopeBoundCount) * 2);
+        }
+        if (slopeBase > 0){
+            tempName += "base" + String.valueOf(slopeBase * 2);
+        }
+        if(slopeBoundCount == -1){
+            slopeBoundCount = deltaBound - Math.max(-8+deltaBound+slopeBase,0);
+        }
+        this.name = tempName;
+
         this.slopeBase = slopeBase;
         this.deltaBound = deltaBound;
         this.iOffset=iOffset;
         this.slopeBoundCount = slopeBoundCount;
     }
-
-
 
     public static ArrayList<EnumSlope> getSection(int i) {
         int start = i*16;
@@ -243,7 +253,7 @@ public enum EnumSlope implements IStringSerializable {
     public String toString() {
         return this.name;
     }
-
+    @Nonnull
     public String getName() {
         return this.name;
     }
@@ -254,89 +264,111 @@ public enum EnumSlope implements IStringSerializable {
 
     public AxisAlignedBB getSlopedBounding(Integer i, BlockPos pos, EnumDirectionQuatrent direction) {
 
-        double minS =(i + this.slopeBase) / 8D;
-        double maxS = minS + .125;
-        i+=this.iOffset;
-        double threshold = (double)i / this.deltaBound;
-        //TODO use the following to make less lines of code
         double x1 = pos.getX();
         double x2 = pos.getX() + 1;
         double y1 = pos.getY();
         double y2 = pos.getY() + 1;
         double z1 = pos.getZ();
         double z2 = pos.getZ() + 1;
-        switch (direction) {
-            case DOWNNORTH:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + minS, pos.getZ() + threshold, pos.getX() + 1, pos.getY() + maxS, pos.getZ() + 1);
-            case DOWNSOUTH:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + minS, pos.getZ(), pos.getX() + 1, pos.getY() + maxS, pos.getZ() + (1 - threshold));
-            case DOWNEAST:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + minS, pos.getZ(), pos.getX() + (1 - threshold), pos.getY() + maxS, pos.getZ() + 1);
-            case DOWNWEST:
-                return new AxisAlignedBB(pos.getX() + threshold, pos.getY() + minS, pos.getZ(), pos.getX() + 1, pos.getY() + maxS, pos.getZ() + 1);
-            case UPNORTH:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + (1 - maxS), pos.getZ() + threshold, pos.getX() + 1, pos.getY() + (1 - minS), pos.getZ() + 1);
-            case UPSOUTH:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + (1 - maxS), pos.getZ(), pos.getX() + 1, pos.getY() + (1 - minS), pos.getZ() + (1 - threshold));
-            case UPEAST:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + (1 - maxS), pos.getZ(), pos.getX() + (1 - threshold), pos.getY() + (1 - minS), pos.getZ() + 1);
-            case UPWEST:
-                return new AxisAlignedBB(pos.getX() + threshold, pos.getY() + (1 - maxS), pos.getZ(), pos.getX() + 1, pos.getY() + (1 - minS), pos.getZ() + 1);
-            case NORTHDOWN:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + threshold, pos.getZ() + minS, pos.getX() + 1, pos.getY() + 1, pos.getZ() + maxS);
-            case NORTHEAST:
-                return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ() + minS, pos.getX() + (1 - threshold), pos.getY() + 1, pos.getZ() + maxS);
-            case NORTHUP:
-                return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ() + minS, pos.getX() + 1, pos.getY() + (1 - threshold), pos.getZ() + maxS);
-            case NORTHWEST:
-                return new AxisAlignedBB(pos.getX() + threshold, pos.getY(), pos.getZ() + minS, pos.getX() + 1, pos.getY() + 1, pos.getZ() + maxS);
-            case SOUTHDOWN:
-                return new AxisAlignedBB(pos.getX(), pos.getY() + threshold, pos.getZ() + (1 - maxS), pos.getX() + 1, pos.getY() + 1, pos.getZ() + (1 - minS));
-            case SOUTHWEST:
-                return new AxisAlignedBB(pos.getX() + threshold, pos.getY(), pos.getZ() + (1 - maxS), pos.getX() + 1, pos.getY() + 1, pos.getZ() + (1 - minS));
-            case SOUTHUP:
-                return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ() + (1 - maxS), pos.getX() + 1, pos.getY() + (1 - threshold), pos.getZ() + (1 - minS));
-            case SOUTHEAST:
-                return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ() + (1 - maxS), pos.getX() + (1 - threshold), pos.getY() + 1, pos.getZ() + (1 - minS));
-            case WESTDOWN:
-                return new AxisAlignedBB(pos.getX() + minS, pos.getY() + threshold, pos.getZ(), pos.getX() + maxS, pos.getY() + 1, pos.getZ() + 1);
-            case WESTNORTH:
-                return new AxisAlignedBB(pos.getX() + minS, pos.getY(), pos.getZ() + threshold, pos.getX() + maxS, pos.getY() + 1, pos.getZ() + 1);
-            case WESTUP:
-                return new AxisAlignedBB(pos.getX() + minS, pos.getY(), pos.getZ(), pos.getX() + maxS, pos.getY() + (1 - threshold), pos.getZ() + 1);
-            case WESTSOUTH:
-                return new AxisAlignedBB(pos.getX() + minS, pos.getY(), pos.getZ(), pos.getX() + maxS, pos.getY() + 1, pos.getZ() + (1 - threshold));
-            case EASTDOWN:
-                return new AxisAlignedBB(pos.getX() + (1 - maxS), pos.getY() + threshold, pos.getZ(), pos.getX() + (1 - minS), pos.getY() + 1, pos.getZ() + 1);
-            case EASTSOUTH:
-                return new AxisAlignedBB(pos.getX() + (1 - maxS), pos.getY(), pos.getZ(), pos.getX() + (1 - minS), pos.getY() + 1, pos.getZ() + (1 - threshold));
-            case EASTUP:
-                return new AxisAlignedBB(pos.getX() + (1 - maxS), pos.getY(), pos.getZ(), pos.getX() + (1 - minS), pos.getY() + (1 - threshold), pos.getZ() + 1);
-            case EASTNORTH:
-                return new AxisAlignedBB(pos.getX() + (1 - maxS), pos.getY(), pos.getZ() + threshold, pos.getX() + (1 - minS), pos.getY() + 1, pos.getZ() + 1);
+
+        double minS =(i + this.slopeBase) / 8D;
+        double maxS = minS + .125;
+        switch(direction.getAnchor()){
+            case EAST:
+                x1 = pos.getX() + minS;
+                x2 = pos.getX() + maxS;
+                break;
+            case WEST:
+                x1 = pos.getX() + (1 - maxS);
+                x2 = pos.getX() + (1 - minS);
+                break;
+            case DOWN:
+                y1 = pos.getY() + minS;
+                y2 = pos.getY() + maxS;
+                break;
+            case UP:
+                y1 = pos.getY() + (1 - maxS);
+                y2 = pos.getY() + (1 - minS);
+                break;
+            case NORTH:
+                z1 = pos.getZ() + minS;
+                z2 = pos.getZ() + maxS;
+                break;
+            case SOUTH:
+                z1 = pos.getZ() + (1 - maxS);
+                z2 = pos.getZ() + (1 - minS);
+                break;
         }
-        return new AxisAlignedBB(threshold + pos.getX(), pos.getY() + minS, pos.getZ(), pos.getX() + 1, pos.getY() + maxS, pos.getZ() + 1);
+        i+=this.iOffset;
+        double threshold = (double)i / this.deltaBound;
+        switch (direction.getFacing()){
+            case WEST:
+                x1 = pos.getX() + threshold;
+                break;
+            case EAST:
+                x2= pos.getX() + (1 - threshold);
+                break;
+            case DOWN:
+                y1 = pos.getY() + threshold;
+                break;
+            case UP:
+                y2= pos.getY() + (1 - threshold);
+                break;
+            case NORTH:
+                z1 = pos.getZ() + threshold;
+                break;
+            case SOUTH:
+                z2 = pos.getZ() + (1 - threshold);
+                break;
+        }
+        return new AxisAlignedBB(x1, y1, z1, x2, y2, z2);
     }
 
     //Only used for any slopes that sit on top of a box or in other words a slopeBase > 0
     public AxisAlignedBB getBaseBounding(BlockPos pos, EnumFacing anchor) {
         if (slopeBase > 0) {
             double sLowBound = slopeBase/8d;
+            double x1 = pos.getX();
+            double x2 = pos.getX() + 1;
+            double y1 = pos.getY();
+            double y2 = pos.getY() + 1;
+            double z1 = pos.getZ();
+            double z2 = pos.getZ() + 1;
             switch (anchor) {
-                case DOWN:
-                    return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + sLowBound, pos.getZ() + 1);
-                case UP:
-                    return new AxisAlignedBB(pos.getX(), pos.getY() + (1 - sLowBound), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-                case NORTH:
-                    return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + sLowBound);
-                case SOUTH:
-                    return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ() + (1 - sLowBound), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
                 case WEST:
-                    return new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + sLowBound, pos.getY() + 1, pos.getZ() + 1);
+                    x2 = pos.getX() + sLowBound;
+                    break;
                 case EAST:
-                    return new AxisAlignedBB(pos.getX() + (1-sLowBound), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+                    x1 = pos.getX() + (1-sLowBound);
+                    break;
+                case DOWN:
+                    y2 = pos.getY() + sLowBound;
+                    break;
+                case UP:
+                    y1 = pos.getY() + (1 - sLowBound);
+                    break;
+                case NORTH:
+                    z2 = pos.getZ() + sLowBound;
+                    break;
+                case SOUTH:
+                    z1 = pos.getZ() + (1 - sLowBound);
+                    break;
             }
+            return new AxisAlignedBB(x1,y1,z1,x2,y2,z2);
         }
         return null;
+    }
+
+    public boolean isSideSolid(EnumFacing placeSide,EnumDirectionQuatrent facing){
+        if(facing.getAnchor() == placeSide){
+            return true;
+        }else if(placeSide == EnumFacing.UP && deltaBound ==0&& slopeBase==16){
+            return true;
+        }else{
+            if(iOffset == 0 && deltaBound + slopeBase >= 8){
+                return placeSide == facing.getFacing().getOpposite();
+            }
+            return false;
+        }
     }
 }

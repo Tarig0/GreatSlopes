@@ -4,7 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.*;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -13,7 +16,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,7 +32,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.slimevoid.camolib.block.properties.PropertySlopeShape;
 import net.slimevoid.camolib.block.properties.UnlistedPropertyBlockPos;
 import net.slimevoid.camolib.block.properties.UnlistedPropertyIBlockState;
 import net.slimevoid.camolib.common.property.CamoExtendedBlockState;
@@ -53,7 +57,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         int sections = (int)Math.ceil(EnumSlope.values().length/16d);
         TYPE = new PropertyEnum[sections];
         for(int i = 0; i<sections;i++){
-            TYPE[i] = PropertySlopeShape.create("slope",EnumSlope.class,EnumSlope.getSection(i));
+            TYPE[i] = PropertyEnum.create("slope",EnumSlope.class,EnumSlope.getSection(i));
         }
     }
     public static final PropertyBool CAMO =  PropertyBool.create ("camo");
@@ -111,7 +115,8 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
                 }
                 state = ((IExtendedBlockState)state).withProperty(FACING,tile.getFacing())
                         .withProperty(HFACING,tile.getHorzFacing())
-                        .withProperty(POS,tile.getPos());
+                        .withProperty(POS,tile.getPos())
+                        .withProperty(DIRECTIONQUAD,EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad()));
             }
         }
         return state;
@@ -154,7 +159,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
             if (playerIn.isSneaking())
                return tile.ClearItemFromFace(side);
             else
-                return tile.setFaceItemWithHeldItem(state,side, heldItem);
+                return tile.setFaceItemWithHeldItem(side, heldItem);
         }
         return false;
     }
@@ -170,6 +175,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         }
         return 0;
     }
+    @SuppressWarnings("deprecation")
     @Override
     @Nonnull
     public IBlockState getStateFromMeta(int meta) {
@@ -204,5 +210,26 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
     public RayTraceResult doRayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB axisalignedbb1) {
         return rayTrace(pos, start, end, axisalignedbb1);
     }
-}
 
+    @Override
+    public void breakBlock(@Nonnull World world,@Nonnull BlockPos pos,@Nonnull IBlockState state)
+    {
+        TileEntityCamoBase tile = (TileEntityCamoBase) world.getTileEntity(pos);
+        if (tile != null) {
+            for(EnumFacing face:EnumFacing.values()) {
+                tile.ClearItemFromFace(face);
+            }
+        }
+        super.breakBlock(world, pos, state);
+    }
+
+    public boolean isSideSolid(IBlockState state,@Nonnull IBlockAccess worldIn,@Nonnull BlockPos pos, EnumFacing side)
+    {
+        TileEntityCamoBase tile = (TileEntityCamoBase) worldIn.getTileEntity(pos);
+        if (tile != null) {
+            EnumSlope slopeType = ((EnumSlope) state.getValue(TYPE[((BlockCamoSlope)state.getBlock()).shapeCat]));
+            return slopeType.isSideSolid(side,(EnumDirectionQuatrent) EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad()));
+        }
+        return false;
+    }
+}

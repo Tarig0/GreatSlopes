@@ -23,12 +23,9 @@ import net.slimevoid.camolib.util.EnumSlope;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.util.List;
 
-import static net.slimevoid.camolib.block.BlockCamoSlope.CAMO;
-import static net.slimevoid.camolib.block.BlockCamoSlope.DIRECTIONQUAD;
-import static net.slimevoid.camolib.block.BlockCamoSlope.TYPE;
+import static net.slimevoid.camolib.block.BlockCamoSlope.*;
 
 public class CamoExtendedBlockState extends ExtendedBlockState {
     public CamoExtendedBlockState(Block blockIn, IProperty<?>[] properties, IUnlistedProperty<?>[] unlistedProperties) {
@@ -64,24 +61,28 @@ public class CamoExtendedBlockState extends ExtendedBlockState {
             return false;
         }
         @Override
+        public boolean isFullCube()
+        {
+            return false;
+        }
+        @Override
         public boolean isOpaqueCube(){
             return false;
         }
         @Override
-        public void addCollisionBoxToList(World worldIn, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, @Nullable Entity p_185908_5_) {
+        public void addCollisionBoxToList(@Nonnull World worldIn,@Nonnull  BlockPos pos,@Nonnull  AxisAlignedBB mask,@Nonnull  List<AxisAlignedBB> list, @Nullable Entity p_185908_5_) {
             TileEntityCamoBase tile = (TileEntityCamoBase) worldIn.getTileEntity(pos);
             if (tile != null) {
                 EnumSlope slopeType = ((EnumSlope) this.getValue(TYPE[((BlockCamoSlope)this.getBlock()).shapeCat]));
                 EnumFacing anchor = tile.getAnchor();
-                EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(anchor, tile.getQuad());
                 AxisAlignedBB axisalignedbb1 = slopeType.getBaseBounding(pos, anchor);
                 if (axisalignedbb1 != null && mask.intersectsWith(axisalignedbb1)) {
                     list.add(axisalignedbb1);
                 }
+                EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(anchor, tile.getQuad());
 
                 for (int i = 0; i < slopeType.getBoundingCount(); i++) {
                     axisalignedbb1 = slopeType.getSlopedBounding(i, pos, facing);
-
                     if (axisalignedbb1 != null && mask.intersectsWith(axisalignedbb1)) {
                         list.add(axisalignedbb1);
                     }
@@ -89,13 +90,14 @@ public class CamoExtendedBlockState extends ExtendedBlockState {
             }
         }
 
+        @SuppressWarnings("NullableProblems")
         @Override
-        public RayTraceResult collisionRayTrace(World worldIn, BlockPos pos, Vec3d start, Vec3d end)
+        public RayTraceResult collisionRayTrace(@Nonnull World worldIn,@Nonnull  BlockPos pos,@Nonnull  Vec3d start,@Nonnull  Vec3d end)
         {
             TileEntityCamoBase tile = (TileEntityCamoBase) worldIn.getTileEntity(pos);
-            IBlockState state = worldIn.getBlockState(pos);
+
             if (tile != null) {
-                EnumSlope slopeType = ((EnumSlope) state.getValue(TYPE[((BlockCamoSlope)this.getBlock()).shapeCat]));
+                EnumSlope slopeType = ((EnumSlope) getValue(TYPE[((BlockCamoSlope)this.getBlock()).shapeCat]));
                 EnumFacing anchor = tile.getAnchor();
                 EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(anchor, tile.getQuad());
                 AxisAlignedBB axisalignedbb1;
@@ -118,10 +120,9 @@ public class CamoExtendedBlockState extends ExtendedBlockState {
                         return ret;
                     }
                 }
-
-
             }
             return null;
         }
     }
+
 }
