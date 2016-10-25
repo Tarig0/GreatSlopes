@@ -60,10 +60,49 @@ public enum EnumSlope implements IStringSerializable {
     //87.5
     SLOPE87_5(7),
     SLOPE87_5BASE2(SLOPE87_5,1),
+    SLOPE87_5SHAVE2(SLOPE87_5,0,6),
+    SLOPE87_5SHAVE2BASE2(SLOPE87_5SHAVE2,1),
+    SLOPE87_5SHAVE2BASE4(SLOPE87_5SHAVE2,2),
+    SLOPE87_5SHAVE4(SLOPE87_5,0,5),
+    SLOPE87_5SHAVE4BASE2(SLOPE87_5SHAVE4,1),
+    SLOPE87_5SHAVE4BASE4(SLOPE87_5SHAVE4,2),
+    SLOPE87_5SHAVE4BASE6(SLOPE87_5SHAVE4,3),
+    SLOPE87_5SHAVE6(SLOPE87_5,0,4),
+    SLOPE87_5SHAVE6BASE2(SLOPE87_5SHAVE6,1),
+    SLOPE87_5SHAVE6BASE4(SLOPE87_5SHAVE6,2),
+    SLOPE87_5SHAVE6BASE6(SLOPE87_5SHAVE6,3),
+    SLOPE87_5SHAVE6BASE8(SLOPE87_5SHAVE6,4),
+    SLOPE87_5SHAVE8(SLOPE87_5,0,3),
+    SLOPE87_5SHAVE8BASE2(SLOPE87_5SHAVE8,1),
+    SLOPE87_5SHAVE8BASE4(SLOPE87_5SHAVE8,2),
+    SLOPE87_5SHAVE8BASE6(SLOPE87_5SHAVE8,3),
+    SLOPE87_5SHAVE8BASE8(SLOPE87_5SHAVE8,4),
+    SLOPE87_5SHAVE8BASE10(SLOPE87_5SHAVE8,5),
+    SLOPE87_5SHAVE10(SLOPE87_5,0,2),
+    SLOPE87_5SHAVE10BASE2(SLOPE87_5SHAVE10,1),
+    SLOPE87_5SHAVE10BASE4(SLOPE87_5SHAVE10,2),
+    SLOPE87_5SHAVE10BASE6(SLOPE87_5SHAVE10,3),
+    SLOPE87_5SHAVE10BASE8(SLOPE87_5SHAVE10,4),
+    SLOPE87_5SHAVE10BASE10(SLOPE87_5SHAVE10,5),
+    SLOPE87_5SHAVE10BASE12(SLOPE87_5SHAVE10,6),
+    SLOPE87_5SHAVE12(SLOPE87_5,0,1),
+    SLOPE87_5SHAVE12BASE2(SLOPE87_5SHAVE12,1),
+    SLOPE87_5SHAVE12BASE4(SLOPE87_5SHAVE12,2),
+    SLOPE87_5SHAVE12BASE6(SLOPE87_5SHAVE12,3),
+    SLOPE87_5SHAVE12BASE8(SLOPE87_5SHAVE12,4),
+    SLOPE87_5SHAVE12BASE10(SLOPE87_5SHAVE12,5),
+    SLOPE87_5SHAVE12BASE12(SLOPE87_5SHAVE12,6),
+    SLOPE87_5SHAVE12BASE14(SLOPE87_5SHAVE12,7),
+    SLOPE87_5SHAVING2(SLOPE87_5,6,1),
+    SLOPE87_5SHAVING4(SLOPE87_5,5,2),
+    SLOPE87_5SHAVING6(SLOPE87_5,4,3),
+    SLOPE87_5SHAVING8(SLOPE87_5,3,4),
+    SLOPE87_5SHAVING10(SLOPE87_5,2,5),
+    SLOPE87_5SHAVING12(SLOPE87_5,1,6),
     //75 Grade
     SLOPE75(6),
-    SLOPE75BASE2(SLOPE75,2),
-    SLOPE75BASE4(SLOPE75,4),
+    SLOPE75BASE2(SLOPE75,1),
+    SLOPE75BASE4(SLOPE75,2),
     SLOPE75SHAVE2(SLOPE75,0,5),
     SLOPE75SHAVE2BASE2(SLOPE75SHAVE2,1),
     SLOPE75SHAVE2BASE4(SLOPE75SHAVE2,2),
@@ -101,6 +140,39 @@ public enum EnumSlope implements IStringSerializable {
     SLOPE75SHAVING10(SLOPE75,1,5),
     //62.5 Grade
     SLOPE62_5(5),
+    SLOPE62_5BASE2(SLOPE62_5,1),
+    SLOPE62_5BASE4(SLOPE62_5,2),
+    SLOPE62_5BASE6(SLOPE62_5,3),
+    SLOPE62_5SHAVE2(SLOPE62_5,0,4),
+    SLOPE62_5SHAVE2BASE2(SLOPE62_5SHAVE2,1),
+    SLOPE62_5SHAVE2BASE4(SLOPE62_5SHAVE2,2),
+    SLOPE62_5SHAVE2BASE6(SLOPE62_5SHAVE2,3),
+    SLOPE62_5SHAVE2BASE8(SLOPE62_5SHAVE2,4),
+    SLOPE62_5SHAVE4(SLOPE62_5,0,3),
+    SLOPE62_5SHAVE4BASE2(SLOPE62_5SHAVE4,1),
+    SLOPE62_5SHAVE4BASE4(SLOPE62_5SHAVE4,2),
+    SLOPE62_5SHAVE4BASE6(SLOPE62_5SHAVE4,3),
+    SLOPE62_5SHAVE4BASE8(SLOPE62_5SHAVE4,4),
+    SLOPE62_5SHAVE4BASE10(SLOPE62_5SHAVE4,5),
+    SLOPE62_5SHAVE6(SLOPE62_5,0,2),
+    SLOPE62_5SHAVE6BASE2(SLOPE62_5SHAVE6,1),
+    SLOPE62_5SHAVE6BASE4(SLOPE62_5SHAVE6,2),
+    SLOPE62_5SHAVE6BASE6(SLOPE62_5SHAVE6,3),
+    SLOPE62_5SHAVE6BASE8(SLOPE62_5SHAVE6,4),
+    SLOPE62_5SHAVE6BASE10(SLOPE62_5SHAVE6,5),
+    SLOPE62_5SHAVE6BASE12(SLOPE62_5SHAVE6,6),
+    SLOPE62_5SHAVE8(SLOPE62_5,0,1),
+    SLOPE62_5SHAVE8BASE2(SLOPE62_5SHAVE8,1),
+    SLOPE62_5SHAVE8BASE4(SLOPE62_5SHAVE8,2),
+    SLOPE62_5SHAVE8BASE6(SLOPE62_5SHAVE8,3),
+    SLOPE62_5SHAVE8BASE8(SLOPE62_5SHAVE8,4),
+    SLOPE62_5SHAVE8BASE10(SLOPE62_5SHAVE8,5),
+    SLOPE62_5SHAVE8BASE12(SLOPE62_5SHAVE8,6),
+    SLOPE62_5SHAVE8BASE14(SLOPE62_5SHAVE8,7),
+    SLOPE62_5SHAVING2(SLOPE62_5,4,1),
+    SLOPE62_5SHAVING4(SLOPE62_5,3,2),
+    SLOPE62_5SHAVING6(SLOPE62_5,2,3),
+    SLOPE62_5SHAVING8(SLOPE62_5,1,4),
     //50 Grade
     SLOPE50(4),
     SLOPE50BASE2(SLOPE50,1),
@@ -133,6 +205,28 @@ public enum EnumSlope implements IStringSerializable {
     SLOPE50SHAVING6(SLOPE50,1,3),
     //37.5
     SLOPE37_5(3),
+    SLOPE37_5BASE2(SLOPE37_5,1),
+    SLOPE37_5BASE4(SLOPE37_5,2),
+    SLOPE37_5BASE6(SLOPE37_5,3),
+    SLOPE37_5BASE8(SLOPE37_5,4),
+    SLOPE37_5BASE10(SLOPE37_5,5),
+    SLOPE37_5SHAVE2(SLOPE37_5,0,2),
+    SLOPE37_5SHAVE2BASE2(SLOPE37_5SHAVE2,1),
+    SLOPE37_5SHAVE2BASE4(SLOPE37_5SHAVE2,2),
+    SLOPE37_5SHAVE2BASE6(SLOPE37_5SHAVE2,3),
+    SLOPE37_5SHAVE2BASE8(SLOPE37_5SHAVE2,4),
+    SLOPE37_5SHAVE2BASE10(SLOPE37_5SHAVE2,5),
+    SLOPE37_5SHAVE2BASE12(SLOPE37_5SHAVE2,6),
+    SLOPE37_5SHAVE4(SLOPE37_5,0,1),
+    SLOPE37_5SHAVE4BASE2(SLOPE37_5SHAVE4,1),
+    SLOPE37_5SHAVE4BASE4(SLOPE37_5SHAVE4,2),
+    SLOPE37_5SHAVE4BASE6(SLOPE37_5SHAVE4,3),
+    SLOPE37_5SHAVE4BASE8(SLOPE37_5SHAVE4,4),
+    SLOPE37_5SHAVE4BASE10(SLOPE37_5SHAVE4,5),
+    SLOPE37_5SHAVE4BASE12(SLOPE37_5SHAVE4,6),
+    SLOPE37_5SHAVE4BASE14(SLOPE37_5SHAVE4,7),
+    SLOPE37_5SHAVING2(SLOPE37_5,2,1),
+    SLOPE37_5SHAVING4(SLOPE37_5,1,2),
     //25 grade
     SLOPE25(2),
     SLOPE25BASE2(SLOPE25,1),
@@ -149,7 +243,7 @@ public enum EnumSlope implements IStringSerializable {
     SLOPE25SHAVE2BASE10(SLOPE25SHAVE2,5),
     SLOPE25SHAVE2BASE12(SLOPE25SHAVE2,6),
     SLOPE25SHAVE2BASE14(SLOPE25SHAVE2,7),
-    SLOPE25SHAVING2(SLOPE25,3,1),
+    SLOPE25SHAVING2(SLOPE25,1,1),
     //12.5 grade
     SLOPE12_5(1),
     SLOPE12_5BASE2(SLOPE12_5,1),
@@ -189,7 +283,7 @@ public enum EnumSlope implements IStringSerializable {
 
         if(iOffset != 0){
             tempName += "shaving" + String.valueOf(slopeBoundCount * 2);
-        }else if(slopeBoundCount > 0){
+        }else if(slopeBoundCount > 0 && (deltaBound-slopeBoundCount) > 0){
             tempName += "shave" + String.valueOf((deltaBound-slopeBoundCount) * 2);
         }
         if (slopeBase > 0){
@@ -215,7 +309,13 @@ public enum EnumSlope implements IStringSerializable {
         }
         return ret;
     }
-
+    public static String[] getSectionNames(){
+        String[] ret = new String[(int)Math.ceil(EnumSlope.values().length/16d)];
+        for(int i=0;i<ret.length;i++){
+            ret[i] = getSectionName(i);
+        }
+        return ret;
+    }
     public static String getSectionName(int i){
         String ret = "CamoSlopeGrade";
         int start = i*16;
@@ -238,12 +338,11 @@ public enum EnumSlope implements IStringSerializable {
             }
         }
         ret += currentName + suffix;
-        suffix = 'a';
-        int end = Math.min(start + 16,EnumSlope.values().length-1);
+        int end = Math.min(start + 15,EnumSlope.values().length-1);
         if (!EnumSlope.values()[end].getName().startsWith(currentName)) {
             for (int x = start + 1; x <= end; x++) {
                 if (NumberUtils.isNumber(EnumSlope.values()[x].getName().replace('_', '.'))) {
-                    ret += EnumSlope.values()[x].getName() + suffix;
+                    ret += EnumSlope.values()[x].getName() + 'a';
                 }
             }
         }
@@ -274,11 +373,11 @@ public enum EnumSlope implements IStringSerializable {
         double minS =(i + this.slopeBase) / 8D;
         double maxS = minS + .125;
         switch(direction.getAnchor()){
-            case EAST:
+            case WEST:
                 x1 = pos.getX() + minS;
                 x2 = pos.getX() + maxS;
                 break;
-            case WEST:
+            case EAST:
                 x1 = pos.getX() + (1 - maxS);
                 x2 = pos.getX() + (1 - minS);
                 break;
