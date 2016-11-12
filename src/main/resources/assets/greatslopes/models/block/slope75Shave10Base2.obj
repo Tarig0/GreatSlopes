@@ -26,8 +26,8 @@ f 5 2 7/1 9/2
 f 9/2 7/1 11/4 6/7
 f 1 3 10/1 8/2
 f 8/2 10/1 4/8 12/3
-usemtl slope
+usemtl top
 f 7 8 12/5 11/6
 f 11/6 12/5 4 6
-usemtl base
+usemtl bottom
 f 5 3 1 2

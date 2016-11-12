@@ -1,7 +1,6 @@
 package net.slimevoid.greatSlopes.util;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.world.gen.structure.template.Template;
 import net.slimevoid.greatSlopes.block.BlockCamoSlope;
 import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 
@@ -9,15 +8,16 @@ import java.util.*;
 
 /**
  * Created by alcoo on 10/30/2016.
+ *
  */
 public class SlopeFactory {
-    static final int maxRise = 8; //100
-    static final int minRise = 0; //12_5
-    static final int maxHeight = 8;
-    static final int groupSize = 16;
-    static final int minShaving = 1;
-    static final Double run = 8.0;
-    public static final HashMap<String, SlopeShape> Shapes = new LinkedHashMap<String, SlopeShape>();
+    private static final int maxRise = 8; //100
+    private static final int minRise = 0; //12_5
+    private static final int maxHeight = 8;
+    private static final int groupSize = 16;
+    private static final int minShaving = 1;
+    private static final Double run = 8.0;
+    public static final HashMap<String, SlopeShape> Shapes = new LinkedHashMap<>();
 
     public static void generate() {
         BlockInfo bInf = new BlockInfo();
@@ -45,9 +45,9 @@ public class SlopeFactory {
     private static class BlockInfo {
         private static String baseName = "CamoSlopeGrade";
         private String blockName = baseName; //init blockName with first known block name
-        private List<String> validValues = new ArrayList<String>();
+        private List<String> validValues = new ArrayList<>();
 
-        public void constructShape(int rise, int shave, int base) {
+        void constructShape(int rise, int shave, int base) {
             String currentName = getBaseName(rise);
             if(shave > 0){
                 currentName += "shave" + (shave * 2);
@@ -57,7 +57,7 @@ public class SlopeFactory {
             }
             AddToLists(currentName,  new SlopeShape(rise,shave,base));
         }
-        public void constructShape(int rise, int shaving) {
+        void constructShape(int rise, int shaving) {
             String currentName = getBaseName(rise) + "shaving" + (shaving * 2);
             AddToLists(currentName,  new SlopeShape(rise,shaving));
         }
@@ -81,7 +81,7 @@ public class SlopeFactory {
             validValues.add(currentName);
             if (validValues.size() == groupSize) {
                 ConfigLib.CamoBlocks.add(new BlockCamoSlope(blockName, Material.CLOTH,validValues));
-                validValues = new ArrayList<String>();//don't empty create new
+                validValues = new ArrayList<>();//don't empty create new
                 blockName = baseName + ConvertRiseToGrade(shape.getRise())+ (char)(blockName.charAt(blockName.length() - 1) + 1);
             }
         }

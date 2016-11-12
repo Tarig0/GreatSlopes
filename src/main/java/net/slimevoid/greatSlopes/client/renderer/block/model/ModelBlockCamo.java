@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.pipeline.IVertexProducer;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.slimevoid.greatSlopes.block.BlockCamoSlope;
@@ -26,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
+/*
  * Created by Allen on 3/24/2015.
  *
  */
@@ -35,31 +34,28 @@ public class ModelBlockCamo implements IBakedModel {
     public ModelBlockCamo(){}
 
 
-    private ArrayList<BakedQuad> CamoSide(IExtendedBlockState origState, @Nonnull IBlockState camo, @Nonnull IVertexProducer origFace) {
-        ArrayList<BakedQuad> ret = new ArrayList<BakedQuad>();
+    private ArrayList<BakedQuad> CamoSide(IExtendedBlockState origState, @Nonnull IBlockState camo, @Nonnull BakedQuad origFace) {
+        ArrayList<BakedQuad> ret = new ArrayList<>();
         //Set Orientation and facings
         for (Object p : camo.getPropertyNames()) {
             if (p instanceof PropertyDirection) {
                 if (((PropertyDirection) p).getAllowedValues().size() > 4) {
-                    camo = camo.withProperty((IProperty) p, origState.getValue(BlockCamoSlope.FACING));
+                    camo = camo.withProperty((PropertyDirection) p, origState.getValue(BlockCamoSlope.FACING));
                 } else {
-                    camo = camo.withProperty((IProperty) p, origState.getValue(BlockCamoSlope.HFACING));
+                    camo = camo.withProperty((PropertyDirection) p, origState.getValue(BlockCamoSlope.HFACING));
                 }
             }
         }
-        //only know how to handle stuff that extend bakedQuad
-        if (BakedQuad.class.isAssignableFrom(origFace.getClass())) {
-            //check to see if we can render the current camo block
-            //might need to add a check per Quad if multipass blocks are a thing
-            if (camo.getBlock().canRenderInLayer(camo,MinecraftForgeClient.getRenderLayer())) {
-                IBakedModel camoModel = FMLClientHandler.instance().getClient().getBlockRendererDispatcher()
-                        .getModelForState(camo);
-                List<BakedQuad> listQuadsIn = camoModel.getQuads(camo, ((BakedQuad) origFace).getFace(), 0);
-                //Loop through each quad
-                for (BakedQuad quad : listQuadsIn) {
-                    if (BakedQuad.class.isAssignableFrom(quad.getClass()))
-                        ret.add(CamoQuad(origState,camo, (BakedQuad) origFace, (BakedQuad) quad));
-                }
+        //check to see if we can render the current camo block
+        //might need to add a check per Quad if multipass blocks are a thing
+        if (camo.getBlock().canRenderInLayer(camo, MinecraftForgeClient.getRenderLayer()) || MinecraftForgeClient.getRenderLayer() == null) {
+            IBakedModel camoModel = FMLClientHandler.instance().getClient().getBlockRendererDispatcher()
+                    .getModelForState(camo);
+            List<BakedQuad> listQuadsIn = camoModel.getQuads(camo,  origFace.getFace(), 0);
+            //Loop through each quad
+            for (BakedQuad quad : listQuadsIn) {
+                if (BakedQuad.class.isAssignableFrom(quad.getClass()))
+                    ret.add(CamoQuad(origState, camo, origFace, quad));
             }
         }
         return ret;
@@ -92,7 +88,7 @@ public class ModelBlockCamo implements IBakedModel {
     }
 
     private int[] CalcColor(IExtendedBlockState origState, IBlockState camo, boolean hasTint, int[] Cs) {
-        int renderLayer = MinecraftForgeClient.getRenderLayer().ordinal();
+        int renderLayer = MinecraftForgeClient.getRenderLayer()==null?1:MinecraftForgeClient.getRenderLayer().ordinal();
         BlockPos pos = origState.getValue(BlockCamoSlope.POS);
         BlockColors colorEngine = FMLClientHandler.instance().getClient().getBlockColors();
         WorldClient worldClient = FMLClientHandler.instance().getWorldClient();
@@ -226,7 +222,7 @@ public class ModelBlockCamo implements IBakedModel {
             List<BakedQuad> origSidedFaces = GetNonCamoModel((IExtendedBlockState) state).getQuads(state, facing, rand); //vanilla models actually do sided
             IBlockState camoState = ((IExtendedBlockState) state).getValue(BlockCamoSlope.BLOCKSTATES[facing.ordinal()]);
             if (camoState != null) {
-                List<BakedQuad> ret = new ArrayList<BakedQuad>();
+                List<BakedQuad> ret = new ArrayList<>();
                 for (BakedQuad face : origFaces) {
                     if (face.getFace() == facing)
                         ret.addAll(CamoSide((IExtendedBlockState) state, camoState, face));
@@ -236,14 +232,12 @@ public class ModelBlockCamo implements IBakedModel {
                 }
                 return ret;
             } else if (state.getBlock().canRenderInLayer(state, MinecraftForgeClient.getRenderLayer())) {
-                List<BakedQuad> ret = new ArrayList<BakedQuad>();
+                List<BakedQuad> ret = new ArrayList<>();
                 for (BakedQuad face : origFaces) {
                     if (face.getFace() == facing)
                         ret.add(face);
                 }
-                for (BakedQuad face : origSidedFaces) {
-                        ret.add(face);
-                }
+                ret.addAll(origSidedFaces);
                 return ret;
             }
         }

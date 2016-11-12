@@ -21,7 +21,7 @@ public class SlopeShape {
     }
 
     SlopeShape(int rise, int shaving) {
-        this(rise,0,-8+shaving);
+        this(rise,0,0-rise+shaving);
         //need to finish constructor
     }
 
@@ -136,10 +136,67 @@ public class SlopeShape {
     }
 
     public int getBoundingCount() {
-       return Base<0?8+Base:(Rise - Shave);
+       return Base<0?Rise+Base:(Rise - Shave);
     }
 
     int getRise() {
         return Rise;
+    }
+
+    public AxisAlignedBB getBoundingBox(EnumDirectionQuatrent direction) {
+        double x1 = 0;
+        double x2 = 1;
+        double y1 = 0;
+        double y2 = 1;
+        double z1 = 0;
+        double z2 = 1;
+        int height = getBoundingCount();
+        if(Base<0){
+            double threshold = (double)(0-this.Base) / this.Rise;
+            switch (direction.getFacing()){
+                case WEST:
+                    x1 = threshold;
+                    break;
+                case EAST:
+                    x2= (1 - threshold);
+                    break;
+                case DOWN:
+                    y1 =  threshold;
+                    break;
+                case UP:
+                    y2= (1 - threshold);
+                    break;
+                case NORTH:
+                    z1 =  threshold;
+                    break;
+                case SOUTH:
+                    z2 =  (1 - threshold);
+                    break;
+            }
+        }else{
+            height+=Base;
+        }
+        switch (direction.getAnchor()) {
+            case WEST:
+                x2 = height/8f;
+                break;
+            case EAST:
+                x1 =1-(height/8f);
+            break;
+            case DOWN:
+                y2 = height/8f;
+            break;
+            case UP:
+                y1 = 1-(height/8f);
+            break;
+            case NORTH:
+                z2 = (height/8f);
+            break;
+            case SOUTH:
+                z1 = 1-(height/8f);
+            break;
+        }
+
+        return new AxisAlignedBB(x1,y1,z1,x2,y2,z2);
     }
 }

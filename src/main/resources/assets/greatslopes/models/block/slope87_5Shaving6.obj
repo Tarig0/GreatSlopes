@@ -1,23 +1,23 @@
 mtllib base.mtl
-v .5 0 1
-v .5 0 0
+v .571 0 1
+v .571 0 0
 v 1 0 1
 v 1 .375 1
 v 1 0 0
 v 1 .375 0
 vt 0 .375
 vt 1 .375
-vt 0 .5
-vt 1 .5
-vt .5 0
-vt .5 0
-vt 0 .5
-vt 1 .5
+vt 0 .571
+vt 1 .571
+vt .571 0
+vt .429 0
+vt 0 .429
+vt 1 .429
 usemtl side
 f 3 5 6/2 4/1
 f 5 2/6 6/1
 f 1/5 3 4/2
-usemtl slope
+usemtl top
 f 2/3 1/4 4 6
-usemtl base
+usemtl bottom
 f 5 3 1/8 2/7

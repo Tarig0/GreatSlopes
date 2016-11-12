@@ -4,8 +4,8 @@
 newmtl side
 map_Kd greatslopes:blocks/dt.transport.elevator.side
 
-newmtl base
+newmtl bottom
 map_Kd greatslopes:blocks/dt.transport.elevator.bottom
 
-newmtl slope
+newmtl top
 map_Kd greatslopes:blocks/dt.transport.elevator.top

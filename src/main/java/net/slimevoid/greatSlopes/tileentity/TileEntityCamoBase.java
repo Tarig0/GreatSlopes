@@ -3,7 +3,6 @@ package net.slimevoid.greatSlopes.tileentity;
 import com.mojang.realmsclient.util.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,7 +24,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class TileEntityCamoBase extends TileEntity {
     //Network Related
-    private Queue<Pair<Integer,Object>> pendingUpdates = new ConcurrentLinkedQueue<Pair<Integer,Object>>();
+    private Queue<Pair<Integer,Object>> pendingUpdates = new ConcurrentLinkedQueue<>();
     //NBT Names
     private static final String ITEMTAGNAME = "Slot";
     private static final String ITEMTAGGROUPNAME = "Items";
@@ -211,7 +210,7 @@ public class TileEntityCamoBase extends TileEntity {
 
     public boolean setFaceItemWithHeldItem(EnumFacing side, ItemStack heldItem) {
 
-        if (items[side.ordinal()] == null && heldItem != null && heldItem.getItem() instanceof ItemBlock) {
+        if (heldItem != null && heldItem.getItem() instanceof ItemBlock) {
             Block b = ((ItemBlock) heldItem.getItem()).getBlock();
             AxisAlignedBB c =b.getDefaultState().getCollisionBoundingBox(this.getWorld(),this.getPos());
             if (!(b instanceof BlockCamoSlope) && c !=null &&
@@ -222,7 +221,6 @@ public class TileEntityCamoBase extends TileEntity {
 
                 items[side.ordinal()] = heldItem.copy();
                 items[side.ordinal()].stackSize = 1;
-                heldItem.stackSize -= 1;
                 this.addPendingCommand(SLOTUPDATECOMMAND, side.ordinal());
                 return true;
             }
@@ -231,13 +229,21 @@ public class TileEntityCamoBase extends TileEntity {
     }
 
     public boolean ClearItemFromFace(EnumFacing side) {
-        if (spawnSideCamoItem(side)) {
+
+        if (this.items[side.ordinal()] != null) {
+            this.items[side.ordinal()]=null;
             this.addPendingCommand(SLOTUPDATECOMMAND, side.ordinal());
+
             return true;
+
         } else {
+
             return false;
+
         }
+
     }
+
 
     public void setAnchor(EnumFacing anchor){
         this.anchor = anchor;
@@ -302,20 +308,6 @@ public class TileEntityCamoBase extends TileEntity {
         return false;
     }
 
-    private boolean spawnSideCamoItem(EnumFacing side) {
-        if (items[side.ordinal()] != null) {
-            float f = 0.7F;
-            double d0 = (double) (this.getWorld().rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            double d1 = (double) (this.getWorld().rand.nextFloat() * f) + (double) (1.0F - f) * 0.2D + 0.6D;
-            double d2 = (double) (this.getWorld().rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(this.getWorld(), (double) pos.getX() + d0, (double) pos.getY() + d1, (double) pos.getZ() + d2, items[side.ordinal()]);
-            entityitem.setDefaultPickupDelay();
-            this.getWorld().spawnEntityInWorld(entityitem);
-            this.items[side.ordinal()] = null;
-            return true;
-        }
-        return false;
-    }
 
 
     public Integer getQuad() {

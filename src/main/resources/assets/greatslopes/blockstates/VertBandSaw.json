@@ -1,0 +1,60 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "greatslopes:BandSaw",
+    "textures": {
+      "particle": "blocks/stone",
+      "bottom": "blocks/stone",
+      "top": "blocks/stone",
+      "side": "blocks/stone",
+      "overlay": "greatslopes:blocks/saw_vert_100_overlay"
+    },
+    "transform":"forge:default-block"
+  },
+  "variants": {
+    "northsouth": {
+      "true": {},
+      "false": {"y":90}
+    },
+    "sawposition": {
+      "7": {},
+      "6": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_87_5_overlay"
+        }
+      },
+      "5": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_75_overlay"
+        }
+      },
+      "4": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_62_5_overlay"
+        }
+      },
+      "3": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_50_overlay"
+        }
+      },
+      "2": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_37_5_overlay"
+        }
+      },
+      "1": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_25_overlay"
+        }
+      },
+      "0": {
+        "textures": {
+          "overlay": "greatslopes:blocks/saw_vert_12_5_overlay"
+        }
+      }
+    },
+    "normal":[{}],
+    "inventory":[{}]
+  }
+}

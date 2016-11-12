@@ -3,11 +3,14 @@
   "defaults": {
     "model":"cube_bottom_top",
     "textures": {
-      "particle": "greatslopes:blocks/dt.transport.elevator.side",
-      "down": "greatslopes:blocks/dt.transport.elevator.bottom",
-      "bottom": "greatslopes:blocks/dt.transport.elevator.bottom",
-      "top":"greatslopes:blocks/dt.transport.elevator.top",
-      "side": "greatslopes:blocks/dt.transport.elevator.side"
+      "particle": "greatslopes:blocks/glued",
+      "down": "greatslopes:blocks/glued",
+      "bottom": "greatslopes:blocks/glued",
+      "top":"greatslopes:blocks/glued",
+      "side": "greatslopes:blocks/glued",
+      "#side": "greatslopes:blocks/glued",
+      "#top": "greatslopes:blocks/glued",
+      "#bottom": "greatslopes:blocks/glued"
     },
     "transform": {
       "thirdperson": {
@@ -305,6 +308,7 @@
       "0base14":{"model":"greatslopes:Slab14"},
       "0base16":{}
     },
-    "inventory":[{}]
+    "inventory":[{}],
+    "normal":[{}]
   }
 }

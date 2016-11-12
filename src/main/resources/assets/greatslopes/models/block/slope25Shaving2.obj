@@ -17,7 +17,7 @@ usemtl side
 f 3 5 6/2 4/1
 f 5 2/6 6/1
 f 1/5 3 4/2
-usemtl slope
+usemtl top
 f 2/3 1/4 4 6
-usemtl base
+usemtl bottom
 f 5 3 1/8 2/7
