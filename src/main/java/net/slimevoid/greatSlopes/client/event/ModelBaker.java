@@ -53,13 +53,13 @@ public class ModelBaker {
     static {
 
         try {
-            Field f = ReflectionHelper.findField(RenderManager.class, "renderPosX");
+            Field f = ReflectionHelper.findField(RenderManager.class, "field_78725_b","renderPosX");
             f.setAccessible(true);
             renderPosX_getter = MethodHandles.publicLookup().unreflectGetter(f);
-            f = ReflectionHelper.findField(RenderManager.class, "renderPosY");
+            f = ReflectionHelper.findField(RenderManager.class,"field_78726_c", "renderPosY");
             f.setAccessible(true);
             renderPosY_getter = MethodHandles.publicLookup().unreflectGetter(f);
-            f = ReflectionHelper.findField(RenderManager.class, "renderPosZ");
+            f = ReflectionHelper.findField(RenderManager.class,"field_78723_d", "renderPosZ");
             f.setAccessible(true);
             renderPosZ_getter = MethodHandles.publicLookup().unreflectGetter(f);
         } catch (IllegalAccessException e) {
