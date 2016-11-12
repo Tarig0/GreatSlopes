@@ -10,7 +10,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
-version = "1.0"
+version = "1.0.1"
 group= "net.slimevoid.GreatSlopes" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "GreatSlopes"
 def mcversion = '1.10.2'
@@ -50,6 +50,14 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+}
+
+compileJava {
+
+    sourceCompatibility = 1.8
+
+    targetCompatibility = 1.8
 
 }
 
