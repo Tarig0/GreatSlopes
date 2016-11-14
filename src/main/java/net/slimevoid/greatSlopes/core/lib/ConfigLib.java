@@ -26,7 +26,7 @@ public class ConfigLib {
     public static ResourceLocation SlopeModel;
     private static Configuration config;
 
-    public static CreativeTabs tabSlopes = new CreativeTabs("SuperSlopes") {
+    public static CreativeTabs tabSlopes = new CreativeTabs("great_slopes") {
         @SuppressWarnings("NullableProblems")
         @Override
         public Item getTabIconItem() {

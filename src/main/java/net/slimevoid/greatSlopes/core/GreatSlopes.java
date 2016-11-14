@@ -42,7 +42,7 @@ import java.util.List;
  */
 @Mod( modid = GreatSlopes.MODID, name = "GreatSlopes", version="0.0.1")
 public class GreatSlopes {
-    public static final String MODID = "greatslopes";
+    public static final String MODID = "great_slopes";
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -51,7 +51,7 @@ public class GreatSlopes {
         ConfigLib.HorzBandSaw = new BlockBandSaw(false);
         ConfigLib.Glue = new Item().setRegistryName("glue").setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":glue").setCreativeTab(CreativeTabs.MATERIALS);
         GameRegistry.register(ConfigLib.Glue);
-        ConfigLib.BasicCamoTool = new ItemCamoTool(ConfigLib.CamoMultiplier).setRegistryName("basiccamotool").setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":BasicCamoTool").setCreativeTab(ConfigLib.tabSlopes);
+        ConfigLib.BasicCamoTool = new ItemCamoTool(ConfigLib.CamoMultiplier).setRegistryName("basic_camo_tool").setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":basic_camo_tool").setCreativeTab(ConfigLib.tabSlopes);
         GameRegistry.register(ConfigLib.BasicCamoTool);
         SlopeFactory.generate();
         if (event.getSide() == Side.CLIENT) clientPreInit();
@@ -59,7 +59,7 @@ public class GreatSlopes {
 
     @SideOnly(Side.CLIENT)
     private void clientPreInit(){
-        ConfigLib.SlopeModel = new ResourceLocation(GreatSlopes.MODID, "Slope");
+        ConfigLib.SlopeModel = new ResourceLocation(GreatSlopes.MODID, "slope");
         //register the modelBaker to insert the smart renderer
         MinecraftForge.EVENT_BUS.register(new ModelBaker());
         OBJLoader.INSTANCE.addDomain(MODID);
@@ -95,7 +95,7 @@ public class GreatSlopes {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event)
     {
-        GameRegistry.registerTileEntity(TileEntityCamoBase.class, "slimevoidcamo");
+        GameRegistry.registerTileEntity(TileEntityCamoBase.class, "slimevoid_camo");
         ConfigLib.VertBandSaw.AddRecipes(7,ConfigLib.GetVertGrade100Recipes());
         ConfigLib.VertBandSaw.AddRecipes(6,ConfigLib.GetVertGrade87_5Recipes());
         ConfigLib.VertBandSaw.AddRecipes(5,ConfigLib.GetVertGrade75Recipes());
@@ -116,7 +116,7 @@ public class GreatSlopes {
             GameRegistry.addShapelessRecipe(new ItemStack(ConfigLib.Glue, 1), Items.WHEAT, Items.SUGAR, PotionUtils.addPotionToItemStack(new ItemStack(Items.POTIONITEM), water));
         }
         ItemStack entryItem = new ItemStack(ConfigLib.CamoBlocks.get(ConfigLib.CamoBlocks.size() - 1),8);
-        entryItem.setItemDamage(ConfigLib.CamoBlocks.get(ConfigLib.CamoBlocks.size() - 1).TYPE.getAllowedValuesList().indexOf("0base16"));
+        entryItem.setItemDamage(ConfigLib.CamoBlocks.get(ConfigLib.CamoBlocks.size() - 1).TYPE.getAllowedValuesList().indexOf("0_base16"));
         GameRegistry.addRecipe(new ShapedOreRecipe(entryItem,new String[] {"ppp","pgp","ppp"},'p',"plankWood",'g',ConfigLib.Glue));
         GameRegistry.addRecipe(new ItemStack(ConfigLib.VertBandSaw),new String[] {"rir","gig","sis"},'r',Items.REDSTONE,'i',Items.IRON_INGOT,'g', Blocks.GLASS_PANE,'s',Blocks.STONE);
         GameRegistry.addRecipe(new ItemStack(ConfigLib.HorzBandSaw),new String[] {"rgr","iii","sgs"},'r',Items.REDSTONE,'i',Items.IRON_INGOT,'g', Blocks.GLASS_PANE,'s',Blocks.STONE);

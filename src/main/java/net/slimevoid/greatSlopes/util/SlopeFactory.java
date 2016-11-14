@@ -43,31 +43,31 @@ public class SlopeFactory {
 
 
     private static class BlockInfo {
-        private static String baseName = "CamoSlopeGrade";
+        private static String baseName = "camo_slope_grade";
         private String blockName = baseName; //init blockName with first known block name
         private List<String> validValues = new ArrayList<>();
 
         void constructShape(int rise, int shave, int base) {
             String currentName = getBaseName(rise);
             if(shave > 0){
-                currentName += "shave" + (shave * 2);
+                currentName += "_shave" + (shave * 2);
             }
             if(base>0){
-                currentName += "base" + (base * 2);
+                currentName += "_base" + (base * 2);
             }
             AddToLists(currentName,  new SlopeShape(rise,shave,base));
         }
         void constructShape(int rise, int shaving) {
-            String currentName = getBaseName(rise) + "shaving" + (shaving * 2);
+            String currentName = getBaseName(rise) + "_shaving" + (shaving * 2);
             AddToLists(currentName,  new SlopeShape(rise,shaving));
         }
         private String getBaseName(int rise) {
             String currentName = ConvertRiseToGrade(rise);
-            if (!blockName.substring(0, blockName.length() - 1).endsWith(currentName)) {
+            if (!blockName.substring(0, blockName.length() - 2).endsWith(currentName)) {
                 if (validValues.size() == 0){
-                    blockName = baseName + currentName + 'A';
+                    blockName = baseName + currentName + "_a";
                 }else{
-                    blockName += currentName + 'A';
+                    blockName += currentName + "_a";
                 }
             }
             return currentName;
@@ -82,7 +82,7 @@ public class SlopeFactory {
             if (validValues.size() == groupSize) {
                 ConfigLib.CamoBlocks.add(new BlockCamoSlope(blockName, Material.CLOTH,validValues));
                 validValues = new ArrayList<>();//don't empty create new
-                blockName = baseName + ConvertRiseToGrade(shape.getRise())+ (char)(blockName.charAt(blockName.length() - 1) + 1);
+                blockName = baseName + '_' + ConvertRiseToGrade(shape.getRise())+'_' + (char)(blockName.charAt(blockName.length() - 1) + 1);
             }
         }
     }

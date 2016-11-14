@@ -1,51 +1,51 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "greatslopes:BandSaw",
+    "model": "great_slopes:band_saw",
     "textures": {
       "particle": "blocks/stone",
       "bottom": "blocks/stone",
       "top": "blocks/stone",
       "side": "blocks/stone",
-      "overlay": "greatslopes:blocks/saw_horz_14_overlay"
+      "overlay": "great_slopes:blocks/saw_horz_14_overlay"
     },
     "transform":"forge:default-block"
   },
   "variants": {
-    "northsouth": {
+    "north_south": {
       "true": {},
       "false": {"y":90}
     },
-    "sawposition": {
+    "saw_position": {
       "6": {},
       "5": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_horz_12_overlay"
+          "overlay": "great_slopes:blocks/saw_horz_12_overlay"
         }
       },
       "4": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_horz_10_overlay"
+          "overlay": "great_slopes:blocks/saw_horz_10_overlay"
         }
       },
       "3": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_horz_8_overlay"
+          "overlay": "great_slopes:blocks/saw_horz_8_overlay"
         }
       },
       "2": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_horz_6_overlay"
+          "overlay": "great_slopes:blocks/saw_horz_6_overlay"
         }
       },
       "1": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_horz_4_overlay"
+          "overlay": "great_slopes:blocks/saw_horz_4_overlay"
         }
       },
       "0": {
         "textures": {
-          "overlay": "greatslopes:blocks/saw_vert_12_5_overlay"
+          "overlay": "great_slopes:blocks/saw_vert_12_5_overlay"
         }
       }
     },

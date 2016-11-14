@@ -218,11 +218,12 @@ public class TileEntityCamoBase extends TileEntity {
                     c.maxY  - c.minY == 1 &&
                     c.maxZ  - c.minZ == 1
                     ) {
-
-                items[side.ordinal()] = heldItem.copy();
-                items[side.ordinal()].stackSize = 1;
-                this.addPendingCommand(SLOTUPDATECOMMAND, side.ordinal());
-                return true;
+                ItemStack is = heldItem.splitStack(1);
+                if(!ItemStack.areItemStacksEqual(is,items[side.ordinal()])){
+                    items[side.ordinal()] = is;
+                    this.addPendingCommand(SLOTUPDATECOMMAND, side.ordinal());
+                    return true;
+                }
             }
         }
         return false;

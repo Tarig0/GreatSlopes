@@ -25,8 +25,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.slimevoid.greatSlopes.block.BlockCamoSlope;
 import net.slimevoid.greatSlopes.client.ShaderHelper;
 import net.slimevoid.greatSlopes.client.renderer.block.model.ModelBlockCamo;
+import net.slimevoid.greatSlopes.common.property.PropertyLookup;
 import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 import net.slimevoid.greatSlopes.item.ItemCamoTool;
+import net.slimevoid.greatSlopes.util.EnumDirectionQuatrent;
+import net.slimevoid.greatSlopes.util.SlopeShape;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
 
@@ -87,25 +90,46 @@ public class ModelBaker {
 
     private static void renderPlayerLook(EntityPlayer playerIn, EnumHand hand, RayTraceResult src, ItemStack heldCamoTool) {
         BlockPos anchorPos = src.getBlockPos();
-        IBlockState targetState = playerIn.getEntityWorld().getBlockState(anchorPos);
-        if (playerIn.getEntityWorld().getBlockState(anchorPos).getBlock() instanceof BlockCamoSlope) {
-            IBlockState state = targetState.getActualState(playerIn.getEntityWorld(),anchorPos).withProperty(CAMO, true);
-            GlStateManager.pushMatrix();
-            GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            GlStateManager.disableLighting();
-            ShaderHelper.useShader(ShaderHelper.alpha, shader -> {
-                int alpha = ARBShaderObjects.glGetUniformLocationARB(shader, "alpha");
-                ARBShaderObjects.glUniform1fARB(alpha, 0.4F);
-            });
+        if(anchorPos != null) { //apparently not
+            IBlockState targetState = playerIn.getEntityWorld().getBlockState(anchorPos);
+            if (playerIn.getEntityWorld().getBlockState(anchorPos).getBlock() instanceof BlockCamoSlope) {
+                IBlockState state = targetState.getActualState(playerIn.getEntityWorld(), anchorPos).withProperty(CAMO, true);
+                EnumFacing sideHit = src.sideHit;
+                EnumDirectionQuatrent dQuad = (EnumDirectionQuatrent) state.getValue(BlockCamoSlope.DIRECTIONQUAD);
+                if (dQuad.getFacing() == sideHit) {
+                    EnumFacing apex = dQuad.getAnchor().getOpposite();
+                    double d;
+                    if (apex.getAxis() == EnumFacing.Axis.Y) {
+                        d = src.hitVec.yCoord - src.getBlockPos().getY();
+                    } else if (apex.getAxis() == EnumFacing.Axis.X) {
+                        d = src.hitVec.xCoord - src.getBlockPos().getX();
+                    } else {
+                        d = src.hitVec.zCoord - src.getBlockPos().getZ();
+                    }
+                    float f1 = (float) d * 8f;
+                    if (apex.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) f1 = 8 - f1;
+                    PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
+                    if (f1 > lookupProp.getLookup(state.getValue(lookupProp)).getBase()) {
+                        sideHit = apex;
+                    }
+                }
+                GlStateManager.pushMatrix();
+                GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
+                GlStateManager.enableBlend();
+                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GlStateManager.disableLighting();
+                ShaderHelper.useShader(ShaderHelper.alpha, shader -> {
+                    int alpha = ARBShaderObjects.glGetUniformLocationARB(shader, "alpha");
+                    ARBShaderObjects.glUniform1fARB(alpha, 0.4F);
+                });
 
-            renderComponentInWorld(playerIn,hand,anchorPos, state,heldCamoTool,src.sideHit);
+                renderComponentInWorld(playerIn, hand, anchorPos, state, heldCamoTool, sideHit);
 
-            ShaderHelper.releaseShader();
-            GL11.glPopAttrib();
-            GlStateManager.popMatrix();
+                ShaderHelper.releaseShader();
+                GL11.glPopAttrib();
+                GlStateManager.popMatrix();
 
+            }
         }
     }
 

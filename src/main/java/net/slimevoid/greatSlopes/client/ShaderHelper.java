@@ -19,7 +19,7 @@ public final class ShaderHelper {
     private static final int FRAG = ARBFragmentShader.GL_FRAGMENT_SHADER_ARB;
     public static int alpha = 0;
     public static void initShaders() {
-        String PREFIX_SHADER = "/assets/greatslopes/shader/";
+        String PREFIX_SHADER = "/assets/great_slopes/shader/";
         alpha = createProgram(PREFIX_SHADER + "alpha.vert", PREFIX_SHADER + "alpha.frag");
     }
     public static void useShader(int shader, ShaderCallback callback) {

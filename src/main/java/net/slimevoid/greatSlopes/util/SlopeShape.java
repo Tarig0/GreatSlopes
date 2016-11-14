@@ -143,6 +143,10 @@ public class SlopeShape {
         return Rise;
     }
 
+    public int getBase() {
+        return Base;
+    }
+
     public AxisAlignedBB getBoundingBox(EnumDirectionQuatrent direction) {
         double x1 = 0;
         double x2 = 1;

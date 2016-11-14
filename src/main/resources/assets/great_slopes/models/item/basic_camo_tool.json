@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "greatslopes:items/camouflager"
+    "layer0": "great_slopes:items/camouflager"
   }
 }

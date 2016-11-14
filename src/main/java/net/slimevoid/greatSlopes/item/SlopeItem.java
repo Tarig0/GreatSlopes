@@ -36,7 +36,7 @@ public class SlopeItem extends ItemBlock {
     @Override
     @Nonnull
     public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName().split(":")[0] + ":CamoSlopeGrade"  + this.ShapeCat.get(stack.getItemDamage()%16);
+        return super.getUnlocalizedName().split(":")[0] + ":camo_slope_grade_"  + this.ShapeCat.get(stack.getItemDamage()%16);
     }
     @Override
     public boolean placeBlockAt(@Nonnull ItemStack stack, @Nonnull EntityPlayer player, World world, @Nonnull BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, @Nonnull IBlockState newState) {

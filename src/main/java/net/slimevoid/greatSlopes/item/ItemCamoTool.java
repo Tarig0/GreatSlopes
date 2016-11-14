@@ -125,9 +125,7 @@ public class ItemCamoTool extends Item {
                         }
                     }
                     //noinspection ConstantConditions
-                    if (internalBlock != null) {
-                        tile.setFaceItemWithHeldItem(facing, internalBlock);
-                        internalBlock.stackSize--;
+                    if (internalBlock != null && tile.setFaceItemWithHeldItem(facing, internalBlock)) {
                         stack.setTagInfo("ITEM",internalBlock.serializeNBT());
                         stack.setItemDamage(this.getMaxDamage()-internalBlock.stackSize);
                         if(internalBlock.stackSize<1){

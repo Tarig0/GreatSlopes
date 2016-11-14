@@ -41,13 +41,13 @@ import java.util.*;
  */
 public class BlockBandSaw extends Block {
     private final PropertyInteger SAWPOSITION;
-    private static final PropertyBool NORTHSOUTH = PropertyBool.create("northsouth");
+    private static final PropertyBool NORTHSOUTH = PropertyBool.create("north_south");
     private ArrayList<HashMap<String, ItemStack[]>> Recipes = new ArrayList<>();
 private final int maxPos;
     public BlockBandSaw(boolean isVert) {
         super(Material.CLAY);
         maxPos = isVert ? 7 : 6;
-        SAWPOSITION = PropertyInteger.create("sawposition", 0, maxPos);
+        SAWPOSITION = PropertyInteger.create("saw_position", 0, maxPos);
         Field blockState = ReflectionHelper.findField(Block.class,"field_176227_L","blockState");
         try {
             blockState.set(this, this.createBlockState());
@@ -56,7 +56,7 @@ private final int maxPos;
         }
         this.setDefaultState(this.blockState.getBaseState());
         this.setDefaultState(this.getDefaultState().withProperty(SAWPOSITION, maxPos));
-        String name = (isVert ? "Vert" : "Horz") + "BandSaw";
+        String name = (isVert ? "vert" : "horz") + "_band_saw";
         setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":" + name);
         setRegistryName(name);
         GameRegistry.register(this);
