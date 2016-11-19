@@ -28,7 +28,7 @@ import net.slimevoid.greatSlopes.client.renderer.block.model.ModelBlockCamo;
 import net.slimevoid.greatSlopes.common.property.PropertyLookup;
 import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 import net.slimevoid.greatSlopes.item.ItemCamoTool;
-import net.slimevoid.greatSlopes.util.EnumDirectionQuatrent;
+import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
 import net.slimevoid.greatSlopes.util.SlopeShape;
 import org.lwjgl.opengl.ARBShaderObjects;
 import org.lwjgl.opengl.GL11;
@@ -48,6 +48,7 @@ import static net.slimevoid.greatSlopes.block.BlockCamoSlope.*;
 public class ModelBaker {
     @SubscribeEvent
     public void onModelBakeEvent(ModelBakeEvent event) {
+
         event.getModelRegistry().putObject(new ModelResourceLocation(ConfigLib.SlopeModel, "normal"), new ModelBlockCamo());
     }
 
@@ -95,7 +96,7 @@ public class ModelBaker {
             if (playerIn.getEntityWorld().getBlockState(anchorPos).getBlock() instanceof BlockCamoSlope) {
                 IBlockState state = targetState.getActualState(playerIn.getEntityWorld(), anchorPos).withProperty(CAMO, true);
                 EnumFacing sideHit = src.sideHit;
-                EnumDirectionQuatrent dQuad = (EnumDirectionQuatrent) state.getValue(BlockCamoSlope.DIRECTIONQUAD);
+                EnumDirectionQuadrant dQuad = (EnumDirectionQuadrant) state.getValue(BlockCamoSlope.DIRECTIONQUAD);
                 if (dQuad.getFacing() == sideHit) {
                     EnumFacing apex = dQuad.getAnchor().getOpposite();
                     double d;

@@ -12,7 +12,7 @@ import net.minecraft.potion.PotionType;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -26,11 +26,12 @@ import net.slimevoid.greatSlopes.block.BlockCamoSlope;
 import net.slimevoid.greatSlopes.block.BlockBandSaw;
 import net.slimevoid.greatSlopes.client.ShaderHelper;
 import net.slimevoid.greatSlopes.client.event.ModelBaker;
+import net.slimevoid.greatSlopes.client.model.SidedOBJLoader;
 import net.slimevoid.greatSlopes.client.renderer.block.statemap.CamoStateMapper;
 import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 import net.slimevoid.greatSlopes.item.ItemCamoTool;
 import net.slimevoid.greatSlopes.tileentity.TileEntityCamoBase;
-import net.slimevoid.greatSlopes.util.EnumDirectionQuatrent;
+import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
 import net.slimevoid.greatSlopes.util.SlopeFactory;
 
 import java.util.List;
@@ -59,11 +60,12 @@ public class GreatSlopes {
 
     @SideOnly(Side.CLIENT)
     private void clientPreInit(){
+        ModelLoaderRegistry.registerLoader(SidedOBJLoader.INSTANCE);
+        SidedOBJLoader.INSTANCE.addDomain(MODID);
         ConfigLib.SlopeModel = new ResourceLocation(GreatSlopes.MODID, "slope");
         //register the modelBaker to insert the smart renderer
         MinecraftForge.EVENT_BUS.register(new ModelBaker());
-        OBJLoader.INSTANCE.addDomain(MODID);
-        IBlockState dstate = ConfigLib.CamoBlocks.get(0).getDefaultState().withProperty(BlockCamoSlope.DIRECTIONQUAD, EnumDirectionQuatrent.DOWNWEST).withProperty(BlockCamoSlope.CAMO, false);
+        IBlockState dstate = ConfigLib.CamoBlocks.get(0).getDefaultState().withProperty(BlockCamoSlope.DIRECTIONQUAD, EnumDirectionQuadrant.DOWNWEST).withProperty(BlockCamoSlope.CAMO, false);
         String propString = new DefaultStateMapper().getPropertyString(dstate.getProperties()).replaceAll("(?<=(,|^))slope=((?!,).)*","slope=%s");
         for(BlockCamoSlope b : ConfigLib.CamoBlocks){
             ModelLoader.setCustomStateMapper(b, new CamoStateMapper());

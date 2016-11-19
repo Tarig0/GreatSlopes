@@ -10,7 +10,7 @@ import java.util.Locale;
  * Created by alcoo on 12/26/2015.
  *
  */
-public enum EnumDirectionQuatrent   implements IStringSerializable {
+public enum EnumDirectionQuadrant implements IStringSerializable {
     DOWNNORTH(EnumFacing.DOWN,EnumFacing.NORTH),
     DOWNSOUTH(EnumFacing.DOWN,EnumFacing.SOUTH),
     DOWNWEST(EnumFacing.DOWN,EnumFacing.WEST),
@@ -40,7 +40,7 @@ public enum EnumDirectionQuatrent   implements IStringSerializable {
     private final EnumFacing anchor;
     private final EnumFacing facing;
 
-    EnumDirectionQuatrent(EnumFacing anchor,EnumFacing facing)
+    EnumDirectionQuadrant(EnumFacing anchor, EnumFacing facing)
     {
         this.anchor = anchor;
         this.facing = facing;

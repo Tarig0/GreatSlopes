@@ -39,7 +39,7 @@ import net.slimevoid.greatSlopes.common.property.UnlistedPropertyIBlockState;
 import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 import net.slimevoid.greatSlopes.item.SlopeItem;
 import net.slimevoid.greatSlopes.tileentity.TileEntityCamoBase;
-import net.slimevoid.greatSlopes.util.EnumDirectionQuatrent;
+import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
 import net.slimevoid.greatSlopes.util.SlopeFactory;
 import net.slimevoid.greatSlopes.util.SlopeShape;
 import org.apache.commons.lang3.ArrayUtils;
@@ -56,7 +56,7 @@ import java.util.List;
 public class BlockCamoSlope extends Block implements ITileEntityProvider {
     public final PropertyLookup<SlopeShape> TYPE;
     public static final PropertyBool CAMO =  PropertyBool.create ("camo");
-    public static final PropertyEnum DIRECTIONQUAD = PropertyEnum.create("dquad", EnumDirectionQuatrent.class);
+    public static final PropertyEnum DIRECTIONQUAD = PropertyEnum.create("dquad", EnumDirectionQuadrant.class);
     public static final IUnlistedProperty<EnumFacing> FACING = Properties.toUnlisted(PropertyDirection.create("facing"));
     public static final IUnlistedProperty<EnumFacing> HFACING = Properties.toUnlisted(PropertyDirection.create("hfacing"));
     public static final UnlistedPropertyIBlockState[] BLOCKSTATES = new UnlistedPropertyIBlockState[6];
@@ -117,7 +117,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
                 state = ((IExtendedBlockState)state).withProperty(FACING,tile.getFacing())
                         .withProperty(HFACING,tile.getHorzFacing())
                         .withProperty(POS,tile.getPos())
-                        .withProperty(DIRECTIONQUAD,EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad()));
+                        .withProperty(DIRECTIONQUAD, EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad()));
             }
         }
         return state;
@@ -128,7 +128,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
     public IBlockState getActualState(@Nonnull IBlockState state,@Nonnull IBlockAccess worldIn, @Nonnull BlockPos pos) {
         TileEntityCamoBase tile = (TileEntityCamoBase) worldIn.getTileEntity(pos);
         if (tile != null) {
-            return state.withProperty(CAMO, tile.hasCamoData()).withProperty(DIRECTIONQUAD, EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad()));
+            return state.withProperty(CAMO, tile.hasCamoData()).withProperty(DIRECTIONQUAD, EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad()));
         } else {
             return state.withProperty(CAMO, false);
         }
@@ -211,7 +211,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         TileEntityCamoBase tile = (TileEntityCamoBase) worldIn.getTileEntity(pos);
         if (tile != null) {
             SlopeShape slopeType = TYPE.getLookup(state.getValue(TYPE));
-            return slopeType.isSideSolid(side,(EnumDirectionQuatrent) EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad()));
+            return slopeType.isSideSolid(side,(EnumDirectionQuadrant) EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad()));
         }
         return false;
     }
@@ -223,7 +223,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         TileEntityCamoBase tile = (TileEntityCamoBase) source.getTileEntity(pos);
         if (tile != null) {
             SlopeShape slopeType = TYPE.getLookup(state.getValue(TYPE));
-            EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(tile.getAnchor(), tile.getQuad());
+            EnumDirectionQuadrant facing = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad());
             return slopeType.getBoundingBox(facing);
         }
         return FULL_BLOCK_AABB;
@@ -239,7 +239,7 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
             if (axisalignedbb1 != null && mask.intersectsWith(axisalignedbb1)) {
                 list.add(axisalignedbb1);
             }
-            EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(anchor, tile.getQuad());
+            EnumDirectionQuadrant facing = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(anchor, tile.getQuad());
 
             for (int i = 0; i < slopeType.getBoundingCount(); i++) {
                 axisalignedbb1 = slopeType.getSlopedBounding(i, pos, facing);
@@ -258,27 +258,37 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         if (tile != null) {
             SlopeShape slopeType = TYPE.getLookup(state.getValue(TYPE));
             EnumFacing anchor = tile.getAnchor();
-            EnumDirectionQuatrent facing = (EnumDirectionQuatrent) EnumDirectionQuatrent.get(anchor, tile.getQuad());
+            EnumDirectionQuadrant facing = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(anchor, tile.getQuad());
             AxisAlignedBB axisalignedbb1;
+            RayTraceResult ret = null;
             for (int i = slopeType.getBoundingCount() - 1; i > -1; i--) {
                 axisalignedbb1 = slopeType.getSlopedBounding(i, pos, facing);
 
                 if (axisalignedbb1 != null) {
                     axisalignedbb1 = axisalignedbb1.offset(-pos.getX(),-pos.getY(),-pos.getZ());
-                    RayTraceResult ret = this.rayTrace(pos, start, end,axisalignedbb1);
-                    if (ret !=null){
-                        return ret;
+                    RayTraceResult canadite = this.rayTrace(pos, start, end,axisalignedbb1);
+                    if(canadite!=null) {
+                        if (ret == null || start.distanceTo(ret.hitVec) > start.distanceTo(canadite.hitVec)) {
+                            ret = canadite;
+                        } else {
+                            return ret;
+                        }
                     }
                 }
             }
             axisalignedbb1 = slopeType.getBaseBounding(pos, anchor);
             if (axisalignedbb1 != null) {
                 axisalignedbb1 = axisalignedbb1.offset(-pos.getX(),-pos.getY(),-pos.getZ());
-                RayTraceResult ret = this.rayTrace( pos, start, end,axisalignedbb1);
-                if (ret !=null){
-                    return ret;
+                RayTraceResult canadite = this.rayTrace( pos, start, end,axisalignedbb1);
+                if(canadite!=null) {
+                    if (ret == null || start.distanceTo(ret.hitVec) > start.distanceTo(canadite.hitVec)) {
+                        ret = canadite;
+                    } else {
+                        return ret;
+                    }
                 }
             }
+            return ret;
         }
         return null;
     }

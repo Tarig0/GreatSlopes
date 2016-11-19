@@ -16,7 +16,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.slimevoid.greatSlopes.block.BlockCamoSlope;
+import net.slimevoid.greatSlopes.common.property.PropertyLookup;
 import net.slimevoid.greatSlopes.tileentity.TileEntityCamoBase;
+import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
+import net.slimevoid.greatSlopes.util.SlopeShape;
 
 import javax.annotation.Nonnull;
 
@@ -54,7 +57,7 @@ public class ItemCamoTool extends Item {
     private ItemStack getCurrentCamo(ItemStack stack,EntityPlayer playerIn, EnumHand hand) {
         ItemStack internalBlock = ItemStack.loadItemStackFromNBT(stack.getSubCompound("ITEM", true));
         //noinspection ConstantConditions
-        if(internalBlock != null) return internalBlock;
+        if(internalBlock != null && !playerIn.isCreative()) return internalBlock;
         ItemStack is = playerIn.getHeldItem(EnumHand.values()[(hand.ordinal() + 1) % 2]);
         if (is != null && isValidCamo(is, playerIn)) {
             return is;
@@ -93,6 +96,27 @@ public class ItemCamoTool extends Item {
         if(worldIn.getBlockState(pos).getBlock() instanceof BlockCamoSlope) {
             TileEntityCamoBase tile = ((TileEntityCamoBase) worldIn.getTileEntity(pos));
             if (tile != null) {
+                //validate facing
+                EnumDirectionQuadrant dQuad = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad());
+                if (dQuad.getFacing() == facing) {
+                    EnumFacing apex = dQuad.getAnchor().getOpposite();
+                    double d;
+                    if (apex.getAxis() == EnumFacing.Axis.Y) {
+                        d = hitY;
+                    } else if (apex.getAxis() == EnumFacing.Axis.X) {
+                        d = hitX;
+                    } else {
+                        d = hitZ;
+                    }
+                    float f1 = (float) d * 8f;
+                    if (apex.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) f1 = 8 - f1;
+
+                    IBlockState state = worldIn.getBlockState(pos);
+                    PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
+                    if (f1 > lookupProp.getLookup(state.getValue(lookupProp)).getBase()) {
+                        facing = apex;
+                    }
+                }
                 if (playerIn.isSneaking()) {
                     tile.ClearItemFromFace(facing);
                     return EnumActionResult.SUCCESS;
@@ -100,7 +124,7 @@ public class ItemCamoTool extends Item {
                     //check internal inventory
                     ItemStack internalBlock = ItemStack.loadItemStackFromNBT(stack.getSubCompound("ITEM", true));
                     //noinspection ConstantConditions bad inspection
-                    if (internalBlock == null || internalBlock.stackSize < 1) {
+                    if (internalBlock == null || internalBlock.stackSize < 1 || playerIn.isCreative()) {
                         ItemStack is = playerIn.getHeldItem(EnumHand.values()[(hand.ordinal() + 1) % 2]);
                         if (is != null && isValidCamo(is, playerIn)) {
                             internalBlock = is.copy();

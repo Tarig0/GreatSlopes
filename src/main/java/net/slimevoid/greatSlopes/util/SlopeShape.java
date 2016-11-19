@@ -25,7 +25,7 @@ public class SlopeShape {
         //need to finish constructor
     }
 
-    public AxisAlignedBB getSlopedBounding(Integer i, BlockPos pos, EnumDirectionQuatrent direction) {
+    public AxisAlignedBB getSlopedBounding(Integer i, BlockPos pos, EnumDirectionQuadrant direction) {
 
         double x1 = pos.getX();
         double x2 = pos.getX() + 1;
@@ -122,7 +122,7 @@ public class SlopeShape {
         return null;
     }
 
-    public boolean isSideSolid(EnumFacing placeSide, EnumDirectionQuatrent facing){
+    public boolean isSideSolid(EnumFacing placeSide, EnumDirectionQuadrant facing){
         if(facing.getAnchor() == placeSide){
             return true;
         }else if(placeSide == EnumFacing.UP && Rise == 0 && Base==8){
@@ -147,7 +147,7 @@ public class SlopeShape {
         return Base;
     }
 
-    public AxisAlignedBB getBoundingBox(EnumDirectionQuatrent direction) {
+    public AxisAlignedBB getBoundingBox(EnumDirectionQuadrant direction) {
         double x1 = 0;
         double x2 = 1;
         double y1 = 0;
