@@ -63,12 +63,13 @@ public class GreatSlopes {
         ModelLoaderRegistry.registerLoader(SidedOBJLoader.INSTANCE);
         SidedOBJLoader.INSTANCE.addDomain(MODID);
         ConfigLib.SlopeModel = new ResourceLocation(GreatSlopes.MODID, "slope");
+        ConfigLib.CornerModel = new ResourceLocation(GreatSlopes.MODID, "corner");
         //register the modelBaker to insert the smart renderer
         MinecraftForge.EVENT_BUS.register(new ModelBaker());
         IBlockState dstate = ConfigLib.CamoBlocks.get(0).getDefaultState().withProperty(BlockCamoSlope.DIRECTIONQUAD, EnumDirectionQuadrant.DOWNWEST).withProperty(BlockCamoSlope.CAMO, false);
         String propString = new DefaultStateMapper().getPropertyString(dstate.getProperties()).replaceAll("(?<=(,|^))slope=((?!,).)*","slope=%s");
         for(BlockCamoSlope b : ConfigLib.CamoBlocks){
-            ModelLoader.setCustomStateMapper(b, new CamoStateMapper());
+            ModelLoader.setCustomStateMapper(b, new CamoStateMapper(ConfigLib.SlopeModel));
             List<String> values = b.TYPE.getAllowedValuesList();
             Item i = Item.getItemFromBlock(b);
             if (i != null) {

@@ -21,6 +21,19 @@ import java.util.List;
 public class SlopeItem extends ItemBlock {
 
     private final List<String> ShapeCat;
+    //bottom
+    //left
+    //top
+    private final static Polygon[] testers;
+
+static{
+    testers =new Polygon[]
+            {
+                    new Polygon(new int[]{0, 1, 2}, new int[]{0, 1, 0}, 3),
+                    new Polygon(new int[]{0, 1, 0}, new int[]{0, 1, 2}, 3),
+                    new Polygon(new int[]{0, 1, 2}, new int[]{2, 1, 2}, 3)
+            };
+}
 
     public SlopeItem(Block b, List<String> shapeCat) {
         super(b);
@@ -48,40 +61,26 @@ public class SlopeItem extends ItemBlock {
                     tile.setAnchor(side.getOpposite());
                     if (side != EnumFacing.UP && side != EnumFacing.DOWN) {
                         double tX = -0, tY = -0;
+                        tY = hitY * 2;
                         switch (side.getOpposite()) {
                             case NORTH:
                                 tX = hitX * 2;
-                                tY = hitY * 2;
                                 break;
                             case SOUTH:
                                 tX = (1 - hitX) * 2;
-                                tY = hitY * 2;
                                 break;
                             case WEST:
                                 tX = (1 - hitZ) * 2;
-                                tY = hitY * 2;
                                 break;
                             case EAST:
                                 tX = hitZ * 2;
-                                tY = hitY * 2;
                                 break;
                         }
                         int quadIdx;
-                        Polygon tester = new Polygon(new int[]{0, 1, 2}, new int[]{2, 1, 2}, 3);
-                        if (tester.contains(tX, tY)) {
-                            quadIdx = 2;
-                        } else {
-                            tester = new Polygon(new int[]{2, 1, 2}, new int[]{0, 1, 2}, 3);
-                            if (tester.contains(tX, tY)) {
-                                quadIdx = 1;
-                            } else {
-                                tester = new Polygon(new int[]{2, 1, 0}, new int[]{0, 1, 0}, 3);
-                                if (tester.contains(tX, tY)) {
-                                    quadIdx = 0;
-                                } else {
-                                    quadIdx = 3;
-                                }
-                            }
+                        for(quadIdx=0;quadIdx<testers.length;quadIdx++){
+                           if(testers[quadIdx].contains(tX, tY)){
+                               break;
+                           }
                         }
                         tile.setQuad(quadIdx);
                     } else {

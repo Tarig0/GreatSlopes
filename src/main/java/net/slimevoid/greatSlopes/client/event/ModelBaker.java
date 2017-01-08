@@ -91,29 +91,15 @@ public class ModelBaker {
 
     private static void renderPlayerLook(EntityPlayer playerIn, EnumHand hand, RayTraceResult src, ItemStack heldCamoTool) {
         BlockPos anchorPos = src.getBlockPos();
-        if(anchorPos != null) { //apparently not
+        if(anchorPos != null) { //apparently not always null
             IBlockState targetState = playerIn.getEntityWorld().getBlockState(anchorPos);
             if (playerIn.getEntityWorld().getBlockState(anchorPos).getBlock() instanceof BlockCamoSlope) {
                 IBlockState state = targetState.getActualState(playerIn.getEntityWorld(), anchorPos).withProperty(CAMO, true);
                 EnumFacing sideHit = src.sideHit;
                 EnumDirectionQuadrant dQuad = (EnumDirectionQuadrant) state.getValue(BlockCamoSlope.DIRECTIONQUAD);
-                if (dQuad.getFacing() == sideHit) {
-                    EnumFacing apex = dQuad.getAnchor().getOpposite();
-                    double d;
-                    if (apex.getAxis() == EnumFacing.Axis.Y) {
-                        d = src.hitVec.yCoord - src.getBlockPos().getY();
-                    } else if (apex.getAxis() == EnumFacing.Axis.X) {
-                        d = src.hitVec.xCoord - src.getBlockPos().getX();
-                    } else {
-                        d = src.hitVec.zCoord - src.getBlockPos().getZ();
-                    }
-                    float f1 = (float) d * 8f;
-                    if (apex.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) f1 = 8 - f1;
-                    PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
-                    if (f1 > lookupProp.getLookup(state.getValue(lookupProp)).getBase()) {
-                        sideHit = apex;
-                    }
-                }
+                PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
+                SlopeShape shape = lookupProp.getLookup(state.getValue(lookupProp));
+                sideHit = shape.getActualSide(dQuad,sideHit,src.hitVec.xCoord,src.hitVec.yCoord,src.hitVec.zCoord);
                 GlStateManager.pushMatrix();
                 GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
                 GlStateManager.enableBlend();

@@ -19,6 +19,7 @@ import net.slimevoid.greatSlopes.block.BlockCamoSlope;
 import net.slimevoid.greatSlopes.common.property.PropertyLookup;
 import net.slimevoid.greatSlopes.tileentity.TileEntityCamoBase;
 import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
+import net.slimevoid.greatSlopes.util.ICamoBlock;
 import net.slimevoid.greatSlopes.util.SlopeShape;
 
 import javax.annotation.Nonnull;
@@ -93,30 +94,15 @@ public class ItemCamoTool extends Item {
     @Nonnull
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if(worldIn.getBlockState(pos).getBlock() instanceof BlockCamoSlope) {
+        if(worldIn.getBlockState(pos).getBlock() instanceof ICamoBlock) {
             TileEntityCamoBase tile = ((TileEntityCamoBase) worldIn.getTileEntity(pos));
             if (tile != null) {
                 //validate facing
                 EnumDirectionQuadrant dQuad = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(tile.getAnchor(), tile.getQuad());
-                if (dQuad.getFacing() == facing) {
-                    EnumFacing apex = dQuad.getAnchor().getOpposite();
-                    double d;
-                    if (apex.getAxis() == EnumFacing.Axis.Y) {
-                        d = hitY;
-                    } else if (apex.getAxis() == EnumFacing.Axis.X) {
-                        d = hitX;
-                    } else {
-                        d = hitZ;
-                    }
-                    float f1 = (float) d * 8f;
-                    if (apex.getAxisDirection() == EnumFacing.AxisDirection.NEGATIVE) f1 = 8 - f1;
-
-                    IBlockState state = worldIn.getBlockState(pos);
-                    PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
-                    if (f1 > lookupProp.getLookup(state.getValue(lookupProp)).getBase()) {
-                        facing = apex;
-                    }
-                }
+                IBlockState state = worldIn.getBlockState(pos);
+                PropertyLookup<SlopeShape> lookupProp = ((BlockCamoSlope) state.getBlock()).TYPE;
+                SlopeShape shape = lookupProp.getLookup(state.getValue(lookupProp));
+                facing = shape.getActualSide(dQuad,facing,hitX,hitY,hitZ);
                 if (playerIn.isSneaking()) {
                     tile.ClearItemFromFace(facing);
                     return EnumActionResult.SUCCESS;

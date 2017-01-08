@@ -11,26 +11,26 @@ import java.util.Locale;
  *
  */
 public enum EnumDirectionQuadrant implements IStringSerializable {
-    DOWNNORTH(EnumFacing.DOWN,EnumFacing.NORTH),
     DOWNSOUTH(EnumFacing.DOWN,EnumFacing.SOUTH),
     DOWNWEST(EnumFacing.DOWN,EnumFacing.WEST),
+    DOWNNORTH(EnumFacing.DOWN,EnumFacing.NORTH),
     DOWNEAST(EnumFacing.DOWN,EnumFacing.EAST),
-    UPNORTH(EnumFacing.UP,EnumFacing.NORTH),
     UPSOUTH(EnumFacing.UP,EnumFacing.SOUTH),
     UPWEST(EnumFacing.UP,EnumFacing.WEST),
+    UPNORTH(EnumFacing.UP,EnumFacing.NORTH),
     UPEAST(EnumFacing.UP,EnumFacing.EAST),
     NORTHDOWN(EnumFacing.NORTH,EnumFacing.DOWN),
-    NORTHEAST(EnumFacing.NORTH,EnumFacing.EAST),
-    NORTHUP(EnumFacing.NORTH,EnumFacing.UP),
     NORTHWEST(EnumFacing.NORTH,EnumFacing.WEST),
+    NORTHUP(EnumFacing.NORTH,EnumFacing.UP),
+    NORTHEAST(EnumFacing.NORTH,EnumFacing.EAST),
     SOUTHDOWN(EnumFacing.SOUTH,EnumFacing.DOWN),
     SOUTHWEST(EnumFacing.SOUTH,EnumFacing.WEST),
     SOUTHUP(EnumFacing.SOUTH,EnumFacing.UP),
     SOUTHEAST(EnumFacing.SOUTH,EnumFacing.EAST),
     WESTDOWN(EnumFacing.WEST,EnumFacing.DOWN),
-    WESTNORTH(EnumFacing.WEST,EnumFacing.NORTH),
-    WESTUP(EnumFacing.WEST,EnumFacing.UP),
     WESTSOUTH(EnumFacing.WEST,EnumFacing.SOUTH),
+    WESTUP(EnumFacing.WEST,EnumFacing.UP),
+    WESTNORTH(EnumFacing.WEST,EnumFacing.NORTH),
     EASTDOWN(EnumFacing.EAST,EnumFacing.DOWN),
     EASTSOUTH(EnumFacing.EAST,EnumFacing.SOUTH),
     EASTUP(EnumFacing.EAST,EnumFacing.UP),
@@ -67,5 +67,9 @@ public enum EnumDirectionQuadrant implements IStringSerializable {
 
     public EnumFacing getFacing() {
         return this.facing;
+    }
+
+    public int getQuadOridinal() {
+        return this.ordinal()%4;
     }
 }

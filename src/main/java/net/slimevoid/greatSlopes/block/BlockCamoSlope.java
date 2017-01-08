@@ -40,6 +40,7 @@ import net.slimevoid.greatSlopes.core.lib.ConfigLib;
 import net.slimevoid.greatSlopes.item.SlopeItem;
 import net.slimevoid.greatSlopes.tileentity.TileEntityCamoBase;
 import net.slimevoid.greatSlopes.util.EnumDirectionQuadrant;
+import net.slimevoid.greatSlopes.util.ICamoBlock;
 import net.slimevoid.greatSlopes.util.SlopeFactory;
 import net.slimevoid.greatSlopes.util.SlopeShape;
 import org.apache.commons.lang3.ArrayUtils;
@@ -53,8 +54,8 @@ import java.util.List;
  * Created by Allen on 3/22/2015.
  *
  */
-public class BlockCamoSlope extends Block implements ITileEntityProvider {
-    public final PropertyLookup<SlopeShape> TYPE;
+public class BlockCamoSlope extends Block implements ITileEntityProvider, ICamoBlock {
+    public PropertyLookup<SlopeShape> TYPE;
     public static final PropertyBool CAMO =  PropertyBool.create ("camo");
     public static final PropertyEnum DIRECTIONQUAD = PropertyEnum.create("dquad", EnumDirectionQuadrant.class);
     public static final IUnlistedProperty<EnumFacing> FACING = Properties.toUnlisted(PropertyDirection.create("facing"));
@@ -66,19 +67,13 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
             BLOCKSTATES[f.ordinal()] = UnlistedPropertyIBlockState.create(f.getName());
         }
     }
-    //public int shapeCat;
     public BlockCamoSlope(String name,Material materialIn,List<String> shapeCat) {
         super(materialIn);
         setRegistryName(name);
         setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":" + name);
         this.fullBlock = false;
         this.isBlockContainer = true;
-        this.TYPE = new PropertyLookup<SlopeShape>("slope",shapeCat){
-            @Override
-            public SlopeShape getLookup(String value) {
-                return SlopeFactory.Shapes.get(value);
-            }
-        };
+        this.createType(shapeCat);
         Field blockState = ReflectionHelper.findField(Block.class,"field_176227_L","blockState");
         blockState.setAccessible(true);
         try {
@@ -93,7 +88,16 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
         i.setRegistryName(name);
         i.setUnlocalizedName(Loader.instance().activeModContainer().getModId() + ":" + name);
         GameRegistry.register(i);
-        this.setCreativeTab(ConfigLib.tabSlopes);
+    }
+
+
+    protected void createType(List<String> shapeCat) {
+        this.TYPE = new PropertyLookup<SlopeShape>("slope",shapeCat){
+            @Override
+            public SlopeShape getLookup(String value) {
+                return SlopeFactory.Shapes.get(value);
+            }
+        };
     }
 
     @Override
@@ -176,13 +180,13 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
     }
     @Override
     public int getMetaFromState(IBlockState state) {
-        return Math.max(0,TYPE.getAllowedValuesList().indexOf( state.getValue(TYPE)));
+        return Math.max(0,this.TYPE.getAllowedValuesList().indexOf( state.getValue(this.TYPE)));
     }
     @SuppressWarnings("deprecation")
     @Override
     @Nonnull
     public IBlockState getStateFromMeta(int meta) {
-            return this.getDefaultState().withProperty(TYPE,TYPE.getAllowedValuesList().get(meta));
+            return this.getDefaultState().withProperty(this.TYPE,this.TYPE.getAllowedValuesList().get(meta));
     }
     @Override
     public int getLightValue(@Nonnull IBlockState state,IBlockAccess world,@Nonnull BlockPos pos) {
@@ -242,9 +246,10 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
             EnumDirectionQuadrant facing = (EnumDirectionQuadrant) EnumDirectionQuadrant.get(anchor, tile.getQuad());
 
             for (int i = 0; i < slopeType.getBoundingCount(); i++) {
-                axisalignedbb1 = slopeType.getSlopedBounding(i, pos, facing);
-                if (axisalignedbb1 != null && mask.intersectsWith(axisalignedbb1)) {
-                    list.add(axisalignedbb1);
+                for (AxisAlignedBB box:slopeType.getSlopedBounding(i, pos, facing)) {
+                    if (mask.intersectsWith(box)) {
+                        list.add(box);
+                    }
                 }
             }
         }
@@ -262,17 +267,20 @@ public class BlockCamoSlope extends Block implements ITileEntityProvider {
             AxisAlignedBB axisalignedbb1;
             RayTraceResult ret = null;
             for (int i = slopeType.getBoundingCount() - 1; i > -1; i--) {
-                axisalignedbb1 = slopeType.getSlopedBounding(i, pos, facing);
-
-                if (axisalignedbb1 != null) {
-                    axisalignedbb1 = axisalignedbb1.offset(-pos.getX(),-pos.getY(),-pos.getZ());
-                    RayTraceResult canadite = this.rayTrace(pos, start, end,axisalignedbb1);
+                RayTraceResult sliceCanadite = null;
+                for (AxisAlignedBB box :slopeType.getSlopedBounding(i, BlockPos.ORIGIN, facing)){
+                    RayTraceResult canadite = this.rayTrace(pos, start, end,box);
                     if(canadite!=null) {
-                        if (ret == null || start.distanceTo(ret.hitVec) > start.distanceTo(canadite.hitVec)) {
-                            ret = canadite;
-                        } else {
-                            return ret;
+                        if (sliceCanadite == null || start.distanceTo(sliceCanadite.hitVec) > start.distanceTo(canadite.hitVec)) {
+                            sliceCanadite = canadite;
                         }
+                    }
+                }
+                if(sliceCanadite!=null) {
+                    if (ret == null || start.distanceTo(ret.hitVec) > start.distanceTo(sliceCanadite.hitVec)) {
+                        ret = sliceCanadite;
+                    } else {
+                        return ret;
                     }
                 }
             }

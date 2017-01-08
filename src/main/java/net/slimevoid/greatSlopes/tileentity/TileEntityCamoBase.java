@@ -316,6 +316,6 @@ public class TileEntityCamoBase extends TileEntity {
     }
 
     public void setQuadtoHface() {
-        this.setQuad(this.getHorzFacing().ordinal()-2);
+        this.setQuad(this.getHorzFacing().getHorizontalIndex());
     }
 }

@@ -24,6 +24,7 @@ public class ConfigLib {
     public static BlockBandSaw HorzBandSaw;
     @SideOnly(Side.CLIENT)
     public static ResourceLocation SlopeModel;
+    public static ResourceLocation CornerModel;
     private static Configuration config;
 
     public static CreativeTabs tabSlopes = new CreativeTabs("great_slopes") {
@@ -33,6 +34,7 @@ public class ConfigLib {
             return Item.getItemFromBlock(ConfigLib.CamoBlocks.get(0));
         }
     };
+    public static CreativeTabs tabCornerSlopes;
     public static Item Glue;
     public static Item BasicCamoTool;
     public static int CamoMultiplier = 6;
